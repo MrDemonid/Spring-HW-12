@@ -10,6 +10,6 @@ public class ActionCategory extends ProductCategory {
 
     @Override
     public String getName() {
-        return "";
+        return "Action";
     }
 }

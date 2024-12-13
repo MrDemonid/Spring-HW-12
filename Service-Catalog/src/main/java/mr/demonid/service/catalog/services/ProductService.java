@@ -3,23 +3,21 @@ package mr.demonid.service.catalog.services;
 import lombok.AllArgsConstructor;
 import mr.demonid.service.catalog.domain.BlockedProduct;
 import mr.demonid.service.catalog.domain.Product;
-import mr.demonid.service.catalog.domain.ProductCategoryEntity;
 import mr.demonid.service.catalog.dto.ProductReservationRequest;
 import mr.demonid.service.catalog.exceptions.CatalogException;
 import mr.demonid.service.catalog.exceptions.NotAvailableException;
 import mr.demonid.service.catalog.exceptions.NotFoundException;
-import mr.demonid.service.catalog.repositories.CategoryRepository;
 import mr.demonid.service.catalog.repositories.ProductRepository;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,14 +26,14 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
     private final BlockedProductService blockedProductService;
+    private final CategoryService categoryService;
 
     /**
      * Резервирование товара для совершения покупки.
      */
     public void reserve(ProductReservationRequest request) throws CatalogException {
-        Product product = productRepository.findById(request.getProductId()).orElse(null);
+        Product product = productRepository.findByIdWithCategory(request.getProductId()).orElse(null);
         if (product == null) {
             throw new NotFoundException();
         }
@@ -54,7 +52,7 @@ public class ProductService {
     public void cancelReserved(UUID orderId) {
         BlockedProduct blockedProduct = blockedProductService.unblock(orderId);
         if (blockedProduct != null) {
-            Product product = productRepository.findById(blockedProduct.getProductId()).orElse(null);
+            Product product = productRepository.findByIdWithCategory(blockedProduct.getProductId()).orElse(null);
             if (product != null) {
                 // возвращаем товар на место
                 product.setStock(product.getStock() + blockedProduct.getQuantity());
@@ -73,12 +71,19 @@ public class ProductService {
         }
     }
 
-
     /**
      * Возвращает список всех товаров.
      */
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepository.findAllWithCategory();
+    }
+
+    /**
+     * Возвращает список товаров из заданной категории.
+     * @param category Имя категории.
+     */
+    public List<Product> getProductByCategory(String category) {
+        return productRepository.findByCategoryName(category);
     }
 
     /**
@@ -86,9 +91,12 @@ public class ProductService {
      * @param id Идентификатор товара.
      */
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findByIdWithCategory(id).orElse(null);
     }
 
+    public Optional<Product> getProductByIdWithCategory(Long id) {
+        return productRepository.findByIdWithCategory(id);
+    }
 
     /**
      * Конвертирует файл в строку Base64.

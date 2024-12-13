@@ -7,6 +7,6 @@ public class OtherCategory extends ProductCategory {
 
     @Override
     public String getName() {
-        return "";
+        return "Other";
     }
 }

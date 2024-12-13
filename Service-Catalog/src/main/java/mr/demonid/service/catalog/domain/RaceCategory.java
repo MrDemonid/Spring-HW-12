@@ -10,6 +10,6 @@ public class RaceCategory extends ProductCategory {
 
     @Override
     public String getName() {
-        return "";
+        return "Race";
     }
 }

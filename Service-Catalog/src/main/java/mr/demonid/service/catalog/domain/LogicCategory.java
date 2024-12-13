@@ -10,6 +10,6 @@ public class LogicCategory extends ProductCategory {
 
     @Override
     public String getName() {
-        return "";
+        return "Logic";
     }
 }
