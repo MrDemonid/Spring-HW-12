@@ -1,33 +1,18 @@
 package mr.demonid.service.cart.repositories;
 
-import mr.demonid.service.cart.domain.CartItem;
+import mr.demonid.service.cart.domain.CartItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
 
 @Repository
-public interface CartRepository extends JpaRepository<CartItem, Long> {
+public interface CartRepository extends JpaRepository<CartItemEntity, Long> {
 
-    List<CartItem> findByUserId(Long userId);
+    CartItemEntity findByUserIdAndProductId(String userId, String productId);
 
-    void deleteByUserIdAndProductId(Long userId, Long productId);
+    void deleteByUserIdAndProductId(String userId, String productId);
+
+    List<CartItemEntity> findByUserId(String userId);
+
 }
-//
-///**
-// * Пока заглушка.
-// */
-//@Repository
-//public class CartRepository {
-//
-//
-//    public void addToCart(Long userId, Long productId, int quantity) {
-//    }
-//
-//    public void removeFromCart(Long userId, Long productId) {
-//    }
-//
-//    public List<CartItem> getCartItems(Long userId) {
-//        return Collections.emptyList();
-//    }
-//}

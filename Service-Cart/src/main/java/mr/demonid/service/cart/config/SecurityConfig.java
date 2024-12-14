@@ -1,7 +1,11 @@
 package mr.demonid.service.cart.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,13 +14,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -27,20 +32,26 @@ public class SecurityConfig {
      * Цепочка фильтров безопасности.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AnonymousUserFilter anonymousUserFilter) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)                      // Отключаем CSRF для запросов API
+                .addFilterBefore(anonymousUserFilter, BearerTokenAuthenticationFilter.class) // Подключаем фильтр
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/cart/**").hasAnyRole("SERVICE")
-                        .requestMatchers("/api/cart/**").hasAnyAuthority("SCOPE_read", "SCOPE_write")
-                        .anyRequest().authenticated()              // Остальные требуют аутентификации
+                        .requestMatchers("/api/cart/**").permitAll()      // к корзине должен быть доступ вообще у всех
+                        .anyRequest().authenticated()                       // Остальные требуют аутентификации
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jt -> jt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
-                .formLogin(AbstractHttpConfigurer::disable)    // Отключаем перенаправление на форму входа
-                .httpBasic(AbstractHttpConfigurer::disable);   // Отключаем Basic Auth
-
+                .formLogin(AbstractHttpConfigurer::disable)                 // Отключаем перенаправление на форму входа
+                .httpBasic(AbstractHttpConfigurer::disable)                 // Отключаем Basic Auth
+                .authenticationProvider(anonymousAuthenticationProvider()); // Добавляем обработчик анонимных пользователей
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationProvider anonymousAuthenticationProvider() {
+        return new AnonymousAuthenticationProvider("anonymousKey");
     }
 
     /**
@@ -71,5 +82,15 @@ public class SecurityConfig {
         return authenticationConverter;
     }
 
+    /*
+     * Посмотрим цепочку фильтров, почему AnonymousUserFilter не получает управление.
+     */
+    @Bean
+    public ApplicationRunner logFilterChain(List<SecurityFilterChain> filterChains) {
+        System.out.println("-- all filters --");
+        return args -> filterChains.forEach(chain -> {
+            chain.getFilters().forEach(filter -> log.info("Filter in chain: {}", filter.getClass().getName()));
+        });
+    }
 }
 

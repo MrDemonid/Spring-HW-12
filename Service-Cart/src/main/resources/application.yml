@@ -28,14 +28,17 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          auto: none
+          auto: create-drop
         show_sql: true
         format_sql: true
 
-    generate-ddl: false
+    generate-ddl: true
 #    defer-datasource-initialization: true
 #    open-in-view: false
 
   config:
     import: optional:configserver:http://localhost:8888
 
+#logging:
+#  level:
+#    org.springframework.security.web: DEBUG
