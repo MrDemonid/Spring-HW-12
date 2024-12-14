@@ -44,8 +44,8 @@ spring:
 
 
 
-#logging:
-#  level:
-#    org.springframework.security.oauth2: TRACE
-#    org.springframework.security: TRACE
-#    org.springframework.web: TRACE
+logging:
+  level:
+    org.springframework.security.oauth2: TRACE
+    org.springframework.security: TRACE
+    org.springframework.web: TRACE

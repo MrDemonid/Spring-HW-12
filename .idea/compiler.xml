@@ -10,6 +10,7 @@
         <module name="config-server" />
         <module name="service-catalog" />
         <module name="service-cart" />
+        <module name="web-client" />
         <module name="auth-server" />
         <module name="gateway-server" />
         <module name="eureka-server" />
@@ -30,6 +31,7 @@
       <module name="service-cart" options="-parameters" />
       <module name="service-catalog" options="-parameters" />
       <module name="service-payment" options="-parameters" />
+      <module name="web-client" options="-parameters" />
     </option>
   </component>
 </project>

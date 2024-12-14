@@ -2,6 +2,7 @@ package mr.demonid.service.catalog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,13 +31,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/catalog/**").hasAnyRole("SERVICE")
-                        .requestMatchers("/api/catalog/**").hasAnyAuthority("SCOPE_read", "SCOPE_write")
+                                .requestMatchers("/api/catalog/**").permitAll()
+                                .requestMatchers("/api/catalog-edit/**").hasAnyRole("SERVICE")
+                                .requestMatchers("/api/catalog-edit/**").hasAuthority("SCOPE_write")
                         .anyRequest().authenticated()              // Остальные требуют аутентификации
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jt -> jt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
+//                .formLogin(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)    // Отключаем перенаправление на форму входа
                 .httpBasic(AbstractHttpConfigurer::disable);   // Отключаем Basic Auth
 
