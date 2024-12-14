@@ -14,6 +14,15 @@
         <module name="auth-server" />
         <module name="service-payment" />
       </profile>
+      <profile name="Annotation profile for Service-Cart" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="service-cart" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="payment-service" target="17" />
@@ -26,6 +35,7 @@
       <module name="config-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="gateway-server" options="-parameters" />
+      <module name="service-cart" options="-parameters" />
       <module name="service-catalog" options="-parameters" />
       <module name="service-payment" options="-parameters" />
     </option>
