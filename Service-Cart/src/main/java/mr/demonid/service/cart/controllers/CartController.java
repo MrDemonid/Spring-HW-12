@@ -26,7 +26,7 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping("/add")
-    public ResponseEntity<CartItem> addItem(@RequestParam String productId, @RequestParam int quantity) {
+    public ResponseEntity<CartItem> addItem(@RequestParam String productId, @RequestParam Integer quantity) {
         log.info("add: product id = {}, quantity = {}, user id: = {}", productId, quantity, UserContext.getCurrentUserId());
         return ResponseEntity.ok(cartService.addItemToCart(productId, quantity));
     }
@@ -37,6 +37,11 @@ public class CartController {
         return ResponseEntity.ok(cartService.getCartItems());
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getItemQuantity() {
+        log.info("get count: {}", cartService.getCartItemQuantity());
+        return ResponseEntity.ok(cartService.getCartItemQuantity());
+    }
 
 //    // Метод для получения товаров в корзине
 //    @GetMapping

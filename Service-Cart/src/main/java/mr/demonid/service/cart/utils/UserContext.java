@@ -27,6 +27,7 @@ public class UserContext {
             return (String) authentication.getPrincipal();      // возвращаем anon_id
         }
         Jwt jwt = (Jwt) authentication.getPrincipal();
+        System.out.println("Claims: " + jwt.getClaims());
         return jwt.getClaim("user_id");
     }
 

@@ -167,6 +167,38 @@
         .login-button:hover, .logout-button:hover {
             background-color: #ff4500;
         }
+
+        /* Стили для корзины товаров */
+        .cart {
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            color: #fff;
+        }
+
+        .cart-link {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .cart-link:hover {
+            color: #ffe53b; /* Цвет при наведении */
+        }
+
+        .cart-count {
+            background-color: #ff4500;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 50%;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -191,6 +223,13 @@
                 </option>
             </select>
         </form>
+        <!-- Корзина -->
+        <div class="cart">
+            <a th:href="@{/cart-page}" class="cart-link">
+                🛒 Корзина
+                <span class="cart-count" th:text="${cartItemCount}">0</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -203,7 +242,7 @@
         <div class="product-price" th:text="'$' + ${product.price}">Price</div>
         <div class="product-stock" th:text="'In stock: ' + ${product.stock}">Stock</div>
         <!-- Форма для отправки данных о заказе -->
-        <form th:action="@{/order}" method="post">
+        <form th:action="@{/cart}" method="post">
             <input type="hidden" name="productId" th:value="${product.id}" />
             <input type="hidden" name="name" th:value="${product.name}" />
             <input type="hidden" name="price" th:value="${product.price}" />

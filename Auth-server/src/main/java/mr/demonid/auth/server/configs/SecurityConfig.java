@@ -139,7 +139,7 @@ public class SecurityConfig {
                 // добавляем в токен некоторые данные о пользователе
                 String username = context.getPrincipal().getName();
                 userRepository.findByUsername(username).ifPresent(user -> {
-                    context.getClaims().claim("user_id", user.getId());     // в поле "sub" есть имя пользователя
+                    context.getClaims().claim("user_id", user.getId().toString());     // в поле "sub" есть имя пользователя
                     context.getClaims().claim("email", user.getEmail());
                 });
             }

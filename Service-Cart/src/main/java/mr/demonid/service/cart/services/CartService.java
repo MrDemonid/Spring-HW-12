@@ -30,4 +30,13 @@ public class CartService {
     public CartItem addItemToCart(String productId, int quantity) {
         return cartFactory.getCart().addItem(UserContext.getCurrentUserId(), productId, quantity);
     }
+
+    /**
+     * Возвращает кол-во товаров в корзине пользователя.
+     */
+    public Integer getCartItemQuantity() {
+        List<CartItem> cartItems = getCartItems();
+        return cartItems.size();
+    }
+
 }

@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * Обращение к микросервису Catalog-service.
- * Поскольку он за API Gateway, то в @FeignClient так же
- * указываем путь к микросервису в API Gateway, через url.
  */
 @FeignClient(name = "CATALOG-SERVICE", configuration = FeignClientConfig.class)      // имя сервиса, под которым он зарегистрирован в Eureka
 public interface CatalogServiceClient {
@@ -26,8 +24,7 @@ public interface CatalogServiceClient {
     @GetMapping("/api/catalog/get-by-category/{category}")
     ResponseEntity<List<ProductInfo>> getProductsByCategory(@PathVariable String category);
 
-
-        @GetMapping("/api/catalog/get-categories")
+    @GetMapping("/api/catalog/get-categories")
     ResponseEntity<List<String>> getCategories();
 
 }

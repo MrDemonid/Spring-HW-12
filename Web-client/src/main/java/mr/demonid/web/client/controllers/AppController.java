@@ -1,17 +1,22 @@
 package mr.demonid.web.client.controllers;
 
+import feign.FeignException;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import mr.demonid.web.client.dto.ProductInfo;
+import mr.demonid.web.client.service.CartService;
 import mr.demonid.web.client.service.CatalogService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 
 @Controller
@@ -19,6 +24,8 @@ import java.util.List;
 public class AppController {
 
     private CatalogService catalogService;
+    private CartService cartService;
+
 
     @GetMapping
     public String baseDir() {
@@ -56,8 +63,11 @@ public class AppController {
         model.addAttribute("categories", categories);
         model.addAttribute("currentCategory", category);
         model.addAttribute("products", products);
+
+        model.addAttribute("cartItemCount", cartService.getProductCount());
         return "/home";
     }
+
 
 
     @GetMapping("/set-category")
@@ -71,5 +81,24 @@ public class AppController {
     public String doLogin(HttpSession session, Model model) {
         return "redirect:/index";
     }
+
+
+    /**
+     * Добавляем товар в корзину.
+     */
+    @PostMapping("/cart")
+    public String placeOrder(@RequestParam("productId") Long productId,
+                             @RequestParam("quantity") Integer quantity,
+                             @RequestParam("price") BigDecimal price,
+                             Model model)
+    {
+        System.out.println("Product ID: " + productId);
+        System.out.println("Quantity: " + quantity);
+        System.out.println("Price: " + price);
+        // открываем заказ
+        cartService.addToCart(productId.toString(), quantity);
+        return "redirect:/index";
+    }
+
 }
 
