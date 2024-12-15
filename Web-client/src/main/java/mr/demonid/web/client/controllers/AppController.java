@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import mr.demonid.web.client.dto.ProductInfo;
 import mr.demonid.web.client.service.CatalogService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,18 @@ public class AppController {
 
     @GetMapping("/index")
     public String index(HttpSession session, Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAuthenticated = authentication != null && authentication.isAuthenticated() &&
+                !"anonymousUser".equals(authentication.getPrincipal());
+        if (isAuthenticated) {
+            model.addAttribute("username", authentication.getName());
+        } else {
+            model.addAttribute("username", null);
+        }
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+
         List<ProductInfo> products;
         System.out.println("Get catalog...");
         // Создаем список категорий продуктов.
@@ -45,6 +59,7 @@ public class AppController {
         return "/home";
     }
 
+
     @GetMapping("/set-category")
     public String setCategory(HttpSession session, Model model, @RequestParam("category") String category) {
         System.out.println("Set category..." + category);
@@ -52,5 +67,9 @@ public class AppController {
         return "redirect:/index";
     }
 
+    @GetMapping("do-login")
+    public String doLogin(HttpSession session, Model model) {
+        return "redirect:/index";
+    }
 }
 

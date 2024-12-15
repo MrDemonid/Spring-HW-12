@@ -31,7 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/payment/**").hasAnyRole("SERVICE")
+                        .requestMatchers("/api/payment/**").hasAnyRole("USER")
                         .requestMatchers("/api/payment/**").hasAnyAuthority("SCOPE_read", "SCOPE_write")
                         .anyRequest().authenticated()              // Остальные требуют аутентификации
                 )

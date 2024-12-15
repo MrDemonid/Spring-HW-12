@@ -83,15 +83,15 @@ public class SecurityConfig {
         return authenticationConverter;
     }
 
-    /*
-     * Посмотрим цепочку фильтров, почему AnonymousUserFilter не получает управление.
-     */
-    @Bean
-    public ApplicationRunner logFilterChain(List<SecurityFilterChain> filterChains) {
-        System.out.println("-- all filters --");
-        return args -> filterChains.forEach(chain -> {
-            chain.getFilters().forEach(filter -> log.info("Filter in chain: {}", filter.getClass().getName()));
-        });
-    }
+//    /*
+//     * Посмотрим цепочку фильтров, почему AnonymousUserFilter не получает управление.
+//     */
+//    @Bean
+//    public ApplicationRunner logFilterChain(List<SecurityFilterChain> filterChains) {
+//        System.out.println("-- all filters --");
+//        return args -> filterChains.forEach(chain -> {
+//            chain.getFilters().forEach(filter -> log.info("Filter in chain: {}", filter.getClass().getName()));
+//        });
+//    }
 }
 

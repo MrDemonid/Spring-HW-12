@@ -11,6 +11,7 @@ spring:
         provider:
           spring:
             issuer-uri: http://localhost:8090
+            jwk-set-uri: http://localhost:8090/oauth2/jwks
         registration:
           apm-client:
             provider: spring
@@ -18,11 +19,11 @@ spring:
             client-secret: "secret"
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_basic
-            redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/apm-client"
+            redirect-uri: "http://127.0.0.1:8080//login/oauth2/code/apm-client"
             scope:
-              - openid
               - user.read
               - user.write
+              - openid
   output.ansi.enabled: ALWAYS
 
 # настройки Эврики
@@ -39,6 +40,11 @@ eureka:
     lease-renewal-interval-in-seconds: 10     # Интервал отправки heartbeats
     lease-expiration-duration-in-seconds: 30  # Таймаут для истечения lease (сердцебиений)
 
-logging:
-  level:
-    org.springframework.security: DEBUG
+#logging:
+#  level:
+#    org.springframework.security.oauth2: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.web: DEBUG
+#    org.springframework.security.jwt: DEBUG
+#    org.springframework.security.oauth2.client: DEBUG
+#    org.springframework.security.oauth2.core: DEBUG

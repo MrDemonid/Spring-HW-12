@@ -4,7 +4,6 @@
     <title>Products</title>
     <style>
         /* Стили для заголовка */
-        /* Стили для заголовка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -50,37 +49,6 @@
             border-color: #8f94fb; /* Эффект при наведении */
             outline: none;
         }
-
-        /*.header {*/
-        /*    display: flex;*/
-        /*    justify-content: space-between;*/
-        /*    align-items: center;*/
-        /*    padding: 10px;*/
-        /*    background-color: #f4f4f4;*/
-        /*    border-bottom: 1px solid #ddd;*/
-        /*}*/
-
-        /*.header .page-title {*/
-        /*    font-size: 1.5em;*/
-        /*    font-weight: bold;*/
-        /*    margin: 0;*/
-        /*}*/
-
-        /*.header .user-info {*/
-        /*    display: flex;*/
-        /*    align-items: center;*/
-        /*    gap: 20px;*/
-        /*}*/
-
-        /*.user-info select {*/
-        /*    padding: 5px;*/
-        /*    font-size: 1em;*/
-        /*}*/
-
-        /*.user-info .balance {*/
-        /*    font-size: 1em;*/
-        /*    color: #007b00;*/
-        /*}*/
 
         /* Стили для сетки товаров */
         .product-grid {
@@ -182,6 +150,23 @@
                 width: 100%; /* Один товар в строке для мобильных устройств */
             }
         }
+
+        /* Стили для кнопок "Вход" и "Выход" */
+        .login-button, .logout-button {
+            background-color: #ff7f50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover, .logout-button:hover {
+            background-color: #ff4500;
+        }
     </style>
 </head>
 <body>
@@ -189,15 +174,14 @@
 <div class="header">
     <div class="page-title">Игры для ПК8000</div>
     <div class="user-info">
-<!--        <div>-->
-<!--            <span>Пользователь:</span>-->
-<!--            <strong th:text="${currentUser.username}">Username</strong>-->
-<!--        </div>-->
-<!--        <div>-->
-<!--            Balance:-->
-<!--            <span class="Баланс" th:text="'$' + ${currentUser.balance}">0.00</span>-->
-<!--        </div>-->
-        <form th:action="@{/set-category}" method="get">
+        <div th:if="${isAuthenticated}">
+            <span th:text="'Привет, ' + ${username} + '!'">Привет, Гость!</span>
+            <a th:href="@{/logout}" class="logout-button">Выход</a>
+        </div>
+        <div th:if="${!isAuthenticated}">
+            <a th:href="@{/do-login}" class="login-button">Вход</a>
+        </div>
+        <form th:action="@{/set-category}" method="get" style="margin-left: 20px;">
             <label for="category">Выберите категорию:</label>
             <select id="category" name="category" onchange="this.form.submit()">
                 <option th:each="category : ${categories}"

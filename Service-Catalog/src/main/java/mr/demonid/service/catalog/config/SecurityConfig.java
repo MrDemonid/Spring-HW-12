@@ -39,7 +39,6 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jt -> jt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
-//                .formLogin(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)    // Отключаем перенаправление на форму входа
                 .httpBasic(AbstractHttpConfigurer::disable);   // Отключаем Basic Auth
 
