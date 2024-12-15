@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)                      // Отключаем CSRF для запросов API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index/**", "/images/**").permitAll()  // Главная и публичные ресурсы
+                        .requestMatchers("/", "/index/**", "/set-category", "/images/**").permitAll()  // Главная и публичные ресурсы
                         .anyRequest().authenticated()  // Остальные требуют аутентификации
                 )
 //                .oauth2Login(oauth2 -> oauth2

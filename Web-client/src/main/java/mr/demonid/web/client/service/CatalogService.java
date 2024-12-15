@@ -28,6 +28,24 @@ public class CatalogService {
         }
     }
 
+    public List<ProductInfo> getProductsByCategory(String category) {
+        try {
+            return catalogServiceClient.getProductsByCategory(category).getBody();
+        } catch (FeignException e) {
+            System.out.println("Что-то пошло не так: " + e.contentUTF8());
+            return new ArrayList<>();
+        }
+    }
+
+    public List<String> getCategories() {
+        try {
+            return catalogServiceClient.getCategories().getBody();
+        } catch (FeignException e) {
+            System.out.println("Что-то пошло не так: " + e.contentUTF8());
+            return new ArrayList<>();
+        }
+    }
+
     /**
      * Возвращает информацию по конкретному товару.
      * @param productId Уникальный идентификатор товара.

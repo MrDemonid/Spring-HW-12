@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/catalog")
@@ -48,8 +49,10 @@ public class ProductController {
      * Возвращает список категорий
      */
     @GetMapping("/get-categories")
-    public ResponseEntity<List<ProductCategory>> getCategories() {
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    public ResponseEntity<List<String>> getCategories() {
+        List<ProductCategory> categories = categoryService.getAllCategories();
+        System.out.println("categories: " + categories);
+        return ResponseEntity.ok(categories.stream().map(ProductCategory::getName).toList());
     }
 
     /**

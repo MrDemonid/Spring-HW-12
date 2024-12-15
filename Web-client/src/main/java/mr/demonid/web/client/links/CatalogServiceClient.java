@@ -22,5 +22,13 @@ public interface CatalogServiceClient {
 
     @GetMapping("/api/catalog/get-product/{id}")
     ResponseEntity<ProductInfo> getProductById(@PathVariable Long id);
+
+    @GetMapping("/api/catalog/get-by-category/{category}")
+    ResponseEntity<List<ProductInfo>> getProductsByCategory(@PathVariable String category);
+
+
+        @GetMapping("/api/catalog/get-categories")
+    ResponseEntity<List<String>> getCategories();
+
 }
 
