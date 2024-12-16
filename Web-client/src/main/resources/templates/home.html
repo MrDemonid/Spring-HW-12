@@ -225,7 +225,7 @@
         </form>
         <!-- Корзина -->
         <div class="cart">
-            <a th:href="@{/cart-page}" class="cart-link">
+            <a th:href="@{/cart}" class="cart-link">
                 🛒 Корзина
                 <span class="cart-count" th:text="${cartItemCount}">0</span>
             </a>
@@ -242,7 +242,7 @@
         <div class="product-price" th:text="'$' + ${product.price}">Price</div>
         <div class="product-stock" th:text="'In stock: ' + ${product.stock}">Stock</div>
         <!-- Форма для отправки данных о заказе -->
-        <form th:action="@{/cart}" method="post">
+        <form th:action="@{/add-to-cart}" method="post">
             <input type="hidden" name="productId" th:value="${product.id}" />
             <input type="hidden" name="name" th:value="${product.name}" />
             <input type="hidden" name="price" th:value="${product.price}" />

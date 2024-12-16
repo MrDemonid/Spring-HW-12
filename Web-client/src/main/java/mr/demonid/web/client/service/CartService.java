@@ -3,9 +3,11 @@ package mr.demonid.web.client.service;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import mr.demonid.web.client.dto.CartItem;
+import mr.demonid.web.client.dto.ProductInfo;
 import mr.demonid.web.client.links.CartServiceClient;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class CartService {
 
     CartServiceClient cartServiceClient;
+    CatalogService catalogService;
 
     public Integer getProductCount() {
         try {
@@ -32,12 +35,39 @@ public class CartService {
         }
     }
 
+    /**
+     * Возвращает список товаров в корзине.
+     */
     public List<CartItem> getItems() {
         try {
-            return cartServiceClient.getItems().getBody();
+            List<CartItem> items = cartServiceClient.getItems().getBody();
+            if (items != null) {
+                items.forEach(this::fillItem);
+            }
+            return items;
         } catch (FeignException e) {
             System.out.println("getItems: " + e.contentUTF8());
             return Collections.emptyList();
         }
     }
+
+    /**
+     * Дополняет данные о товаре в корзине, получая
+     * наименование товара и вычисляя его стоимость.
+     */
+    private void fillItem(CartItem item) {
+        try {
+            ProductInfo product = catalogService.getProductById(Long.parseLong(item.getProductId()));
+            item.setProductName(product.getName());
+            item.setPrice(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+            System.out.println("    -- item: " + item);
+        } catch (Exception e) {
+            System.out.println("fillItem: " + e.getMessage());
+            item.setProductName("Unknown");
+            item.setPrice(BigDecimal.ZERO);
+            item.setQuantity(0);
+        }
+
+    }
+
 }

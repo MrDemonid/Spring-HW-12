@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)                      // Отключаем CSRF для запросов API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index/**", "/set-category", "/images/**", "/cart/**").permitAll()  // Главная и публичные ресурсы
+                        .requestMatchers("/", "/index/**", "/set-category", "/images/**", "/add-to-cart").permitAll()  // Главная и публичные ресурсы
                         .anyRequest().authenticated()  // Остальные требуют аутентификации
                 )
                 .anonymous(Customizer.withDefaults()) // Включение анонимных пользователей

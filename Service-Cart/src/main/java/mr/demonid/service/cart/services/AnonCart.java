@@ -1,6 +1,9 @@
 package mr.demonid.service.cart.services;
 
+import lombok.Setter;
 import mr.demonid.service.cart.dto.CartItem;
+import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Scope;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,14 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Корзина для анонимных пользователей.
  * Располагается в памяти и теряется при уходе пользователя.
  */
+@Component
+@Scope("prototype")
 public class AnonCart implements Cart {
 
     private static final Map<String, List<CartItem>> cartItems = new ConcurrentHashMap<>();
+    @Setter
     private String userId;
 
-    public AnonCart(String userId) {
-        this.userId = userId;
-    }
 
     @Override
     public CartItem addItem(String productId, int quantity) {

@@ -26,4 +26,4 @@ public interface CartServiceClient {
     @GetMapping("/api/cart")
     ResponseEntity<List<CartItem>> getItems();
 
-    }
+}

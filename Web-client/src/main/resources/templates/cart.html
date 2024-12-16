@@ -37,7 +37,7 @@
         <!-- Пример итерации по товарам -->
         <tr th:each="item, iterStat : ${cartItems}">
             <td th:text="${iterStat.index + 1}"></td>
-            <td th:text="${item.name}"></td>
+            <td th:text="${item.productName}"></td>
             <td th:text="${item.quantity}"></td>
             <td th:text="${item.price}"></td>
         </tr>
@@ -46,17 +46,17 @@
 
     <!-- Блок с кнопками -->
     <div class="btn-container">
-        <a href="/catalog" class="btn btn-secondary">Назад</a>
+        <a href="/" class="btn btn-secondary">Назад</a>
 
-        <div>
-            <select class="form-select d-inline-block w-auto" th:name="paymentMethod" aria-label="Выберите способ оплаты">
-                <option value="" selected disabled>Выберите способ оплаты</option>
-                <option value="card">Картой</option>
-                <option value="cash">Наличные</option>
-                <option value="online">Онлайн</option>
-            </select>
-            <button class="btn btn-primary ms-2">Оплатить</button>
-        </div>
+        <form th:action="@{/processPayment}" method="post">
+            <div>
+                <select class="form-select d-inline-block w-auto" name="paymentMethod" aria-label="Выберите способ оплаты" required>
+                    <option value="" selected disabled>Выберите способ оплаты</option>
+                    <option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method}"></option>
+                </select>
+                <button type="submit" class="btn btn-primary ms-2">Оплатить</button>
+            </div>
+        </form>
     </div>
 </div>
 

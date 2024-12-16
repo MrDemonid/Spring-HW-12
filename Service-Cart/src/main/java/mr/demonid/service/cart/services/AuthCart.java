@@ -1,27 +1,30 @@
 package mr.demonid.service.cart.services;
 
+import lombok.Setter;
 import mr.demonid.service.cart.domain.CartItemEntity;
 import mr.demonid.service.cart.dto.CartItem;
 import mr.demonid.service.cart.repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Корзина авторизированного пользователя.
  */
-@Configurable
+@Component
+@Scope("prototype")
 public class AuthCart implements Cart {
 
     @Autowired
     private CartRepository cartRepository;      // внедряем БД
-    private final String userId;
 
+    @Setter
+    private String userId;
 
-    public AuthCart(String userId) {
-        this.userId = userId;
-    }
 
     @Override
     public CartItem addItem(String productId, int quantity) {

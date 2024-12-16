@@ -38,6 +38,9 @@ public class PaymentController {
 
     @GetMapping("/strategies")
     public ResponseEntity<List<String>> getAvailableStrategies() {
+        System.out.println("do strategies...");
+        List<String> availableStrategies = strategyRegistry.getAvailableStrategies();
+        System.out.println("--> strategies: " + availableStrategies);
         return ResponseEntity.ok(strategyRegistry.getAvailableStrategies());
     }
 }

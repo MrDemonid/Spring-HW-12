@@ -1,6 +1,7 @@
 package mr.demonid.service.cart.services;
 
 import mr.demonid.service.cart.dto.CartItem;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Заглушка, на случай если пользователя нельзя опознать.
  */
-@Service
+@Component
 public class EmptyCart implements Cart {
     @Override
     public CartItem addItem(String productId, int quantity) {

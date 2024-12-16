@@ -29,6 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)                      // Отключаем CSRF для запросов API
                 .authorizeHttpRequests(authorize -> authorize
                                 .requestMatchers("/api/orders/**").permitAll()
                                 .requestMatchers("/api/orders-edit/**").hasAnyRole("SERVICE")
