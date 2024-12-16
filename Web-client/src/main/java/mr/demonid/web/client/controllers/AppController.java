@@ -1,11 +1,15 @@
 package mr.demonid.web.client.controllers;
 
 import feign.FeignException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import mr.demonid.web.client.dto.ProductInfo;
 import mr.demonid.web.client.service.CartService;
 import mr.demonid.web.client.service.CatalogService;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,9 +39,16 @@ public class AppController {
     }
 
     @GetMapping("/index")
-    public String index(HttpSession session, Model model) {
+    public String index(HttpSession session, Model model, HttpServletRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            // Пользователь анонимный
+            System.out.println("Anonim: " + getAnonymousId(request));
+        }
+
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated() &&
                 !"anonymousUser".equals(authentication.getPrincipal());
         if (isAuthenticated) {
@@ -90,14 +102,49 @@ public class AppController {
     public String placeOrder(@RequestParam("productId") Long productId,
                              @RequestParam("quantity") Integer quantity,
                              @RequestParam("price") BigDecimal price,
-                             Model model)
+                             Model model,
+                             HttpServletRequest request, HttpServletResponse response)
     {
         System.out.println("Product ID: " + productId);
         System.out.println("Quantity: " + quantity);
         System.out.println("Price: " + price);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            // Пользователь анонимный
+            System.out.println("Anonim: " + getAnonymousId(request));
+//            if (getAnonymousId(request) == null) {
+//                 setAnonymousCookie(response);
+//                System.out.println("new Anon: " + getAnonymousId(request));
+//            }
+//            String id = (String) session.getAttribute("anon_id");
+//            if (id == null) {
+//                session.setAttribute("anon_id", UUID.randomUUID().toString());
+//                System.out.println("-- new anon_id: " + session.getAttribute("anon_id"));
+//            }
+        }
         // открываем заказ
         cartService.addToCart(productId.toString(), quantity);
         return "redirect:/index";
+    }
+
+
+    public void setAnonymousCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("ANON_ID", UUID.randomUUID().toString());
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7 дней
+//        cookie.setSameSite("Lax"); // Защита от CSRF
+        response.addCookie(cookie);
+    }
+
+    public String getAnonymousId(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> "ANON_ID".equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
     }
 
 }

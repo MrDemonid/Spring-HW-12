@@ -1,5 +1,6 @@
 package mr.demonid.service.cart.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import mr.demonid.service.cart.dto.CartItem;
 import mr.demonid.service.cart.services.CartService;
@@ -26,21 +27,21 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping("/add")
-    public ResponseEntity<CartItem> addItem(@RequestParam String productId, @RequestParam Integer quantity) {
-        log.info("add: product id = {}, quantity = {}, user id: = {}", productId, quantity, UserContext.getCurrentUserId());
-        return ResponseEntity.ok(cartService.addItemToCart(productId, quantity));
+    public ResponseEntity<CartItem> addItem(@RequestParam String productId, @RequestParam Integer quantity, HttpServletRequest request) {
+        log.info("add: product id = {}, quantity = {}, user id: = {}", productId, quantity, UserContext.getCurrentUserId(request));
+        return ResponseEntity.ok(cartService.addItemToCart(productId, quantity, request));
     }
 
     @GetMapping
-    public ResponseEntity<List<CartItem>> getItems() {
-        log.info("get cart from user: {}", UserContext.getCurrentUserId());
-        return ResponseEntity.ok(cartService.getCartItems());
+    public ResponseEntity<List<CartItem>> getItems(HttpServletRequest request) {
+        log.info("get cart from user: {}", UserContext.getCurrentUserId(request));
+        return ResponseEntity.ok(cartService.getCartItems(request));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> getItemQuantity() {
-        log.info("get count: {}", cartService.getCartItemQuantity());
-        return ResponseEntity.ok(cartService.getCartItemQuantity());
+    public ResponseEntity<Integer> getItemQuantity(HttpServletRequest request) {
+        log.info("get count: {}", cartService.getCartItemQuantity(request));
+        return ResponseEntity.ok(cartService.getCartItemQuantity(request));
     }
 
 //    // Метод для получения товаров в корзине

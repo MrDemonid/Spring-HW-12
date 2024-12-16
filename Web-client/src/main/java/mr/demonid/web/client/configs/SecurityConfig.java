@@ -7,7 +7,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -15,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class SecurityConfig {
 
+    private AnonymousCookieFilter anonymousCookieFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,6 +27,11 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index/**", "/set-category", "/images/**", "/cart/**").permitAll()  // Главная и публичные ресурсы
                         .anyRequest().authenticated()  // Остальные требуют аутентификации
                 )
+                .anonymous(Customizer.withDefaults()) // Включение анонимных пользователей
+                .addFilterBefore(anonymousCookieFilter, UsernamePasswordAuthenticationFilter.class)
+//                .sessionManagement(session ->
+//                        session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // Создавать сессии (для анонимов)
+//                )
                 .oauth2Login(Customizer.withDefaults()); // Настройка OAuth2 Login
         return http.build();
     }

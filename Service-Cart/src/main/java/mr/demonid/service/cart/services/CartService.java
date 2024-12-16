@@ -1,5 +1,6 @@
 package mr.demonid.service.cart.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mr.demonid.service.cart.dto.CartItem;
 import mr.demonid.service.cart.strategy.CartFactory;
@@ -18,8 +19,8 @@ public class CartService {
     /**
      * Возвращает список товаров в корзине текущего пользователя.
      */
-    public List<CartItem> getCartItems() {
-        return cartFactory.getCart().getItems(UserContext.getCurrentUserId());
+    public List<CartItem> getCartItems(HttpServletRequest request) {
+        return cartFactory.getCart().getItems(UserContext.getCurrentUserId(request));
     }
 
     /**
@@ -27,15 +28,15 @@ public class CartService {
      * @param productId Код товара
      * @param quantity  Количество.
      */
-    public CartItem addItemToCart(String productId, int quantity) {
-        return cartFactory.getCart().addItem(UserContext.getCurrentUserId(), productId, quantity);
+    public CartItem addItemToCart(String productId, int quantity, HttpServletRequest request) {
+        return cartFactory.getCart().addItem(UserContext.getCurrentUserId(request), productId, quantity);
     }
 
     /**
      * Возвращает кол-во товаров в корзине пользователя.
      */
-    public int getCartItemQuantity() {
-        List<CartItem> cartItems = getCartItems();
+    public int getCartItemQuantity(HttpServletRequest request) {
+        List<CartItem> cartItems = getCartItems(request);
         return cartItems.stream().mapToInt(CartItem::getQuantity).sum();
     }
 

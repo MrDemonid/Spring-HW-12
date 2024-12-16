@@ -32,10 +32,9 @@ public class SecurityConfig {
      * Цепочка фильтров безопасности.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AnonymousUserFilter anonymousUserFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)                      // Отключаем CSRF для запросов API
-                .addFilterBefore(anonymousUserFilter, BearerTokenAuthenticationFilter.class) // Подключаем фильтр
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/cart/**").permitAll()      // к корзине должен быть доступ вообще у всех
                         .requestMatchers("/h2-console").permitAll()
@@ -45,15 +44,10 @@ public class SecurityConfig {
                         .jwt(jt -> jt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
                 .formLogin(AbstractHttpConfigurer::disable)                 // Отключаем перенаправление на форму входа
-                .httpBasic(AbstractHttpConfigurer::disable)                 // Отключаем Basic Auth
-                .authenticationProvider(anonymousAuthenticationProvider()); // Добавляем обработчик анонимных пользователей
+                .httpBasic(AbstractHttpConfigurer::disable);                // Отключаем Basic Auth
         return http.build();
     }
 
-    @Bean
-    public AuthenticationProvider anonymousAuthenticationProvider() {
-        return new AnonymousAuthenticationProvider("anonymousKey");
-    }
 
     /**
      * Извлекает из полей запроса значения ROLE и SCOPE.
