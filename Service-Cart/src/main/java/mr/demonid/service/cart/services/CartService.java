@@ -34,9 +34,9 @@ public class CartService {
     /**
      * Возвращает кол-во товаров в корзине пользователя.
      */
-    public Integer getCartItemQuantity() {
+    public int getCartItemQuantity() {
         List<CartItem> cartItems = getCartItems();
-        return cartItems.size();
+        return cartItems.stream().mapToInt(CartItem::getQuantity).sum();
     }
 
 }

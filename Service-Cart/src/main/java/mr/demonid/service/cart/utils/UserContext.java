@@ -24,10 +24,11 @@ public class UserContext {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (isAnonymous()) {
+            System.out.println("  -- UserContext: Anonymous user");
             return (String) authentication.getPrincipal();      // возвращаем anon_id
         }
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        System.out.println("Claims: " + jwt.getClaims());
+        System.out.println("  -- UserContext: User: " + jwt.getClaim("user_id"));
         return jwt.getClaim("user_id");
     }
 
