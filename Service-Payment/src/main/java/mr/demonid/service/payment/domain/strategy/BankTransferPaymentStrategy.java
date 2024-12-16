@@ -10,4 +10,9 @@ public class BankTransferPaymentStrategy implements PaymentStrategy {
     public void pay(String userId, BigDecimal amount) {
         System.out.println("Оплата " + amount + " через банк для пользователя: " + userId);
     }
+
+    @Override
+    public String getName() {
+        return "Банковский перевод";
+    }
 }

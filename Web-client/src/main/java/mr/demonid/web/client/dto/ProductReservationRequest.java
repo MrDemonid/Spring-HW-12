@@ -18,4 +18,5 @@ public class ProductReservationRequest {
     private long productId;
     private int quantity;
     private BigDecimal price;
+    private String paymentMethod;
 }

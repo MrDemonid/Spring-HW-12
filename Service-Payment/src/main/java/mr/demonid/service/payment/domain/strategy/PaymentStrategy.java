@@ -7,5 +7,6 @@ import java.math.BigDecimal;
  */
 public interface PaymentStrategy {
     void pay(String userId, BigDecimal amount);
+    String getName();
 }
 

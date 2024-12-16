@@ -52,7 +52,7 @@
             <div>
                 <select class="form-select d-inline-block w-auto" name="paymentMethod" aria-label="Выберите способ оплаты" required>
                     <option value="" selected disabled>Выберите способ оплаты</option>
-                    <option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method}"></option>
+                    <option th:each="method : ${paymentMethods}" th:value="${method.getStrategyName()}" th:text="${method.getDescription()}"></option>
                 </select>
                 <button type="submit" class="btn btn-primary ms-2">Оплатить</button>
             </div>

@@ -1,6 +1,7 @@
 package mr.demonid.web.client.links;
 
 import mr.demonid.web.client.configs.FeignClientConfig;
+import mr.demonid.web.client.dto.StrategyInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,5 +12,5 @@ import java.util.List;
 public interface PaymentServiceClient {
 
     @GetMapping("/api/payment/strategies")
-    ResponseEntity<List<String>> getAvailableStrategies();
+    ResponseEntity<List<StrategyInfo>> getAvailableStrategies();
 }

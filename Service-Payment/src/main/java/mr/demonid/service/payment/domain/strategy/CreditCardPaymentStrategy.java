@@ -11,4 +11,9 @@ public class CreditCardPaymentStrategy implements PaymentStrategy {
     public void pay(String userId, BigDecimal amount) {
         System.out.println("Using CreditCardPaymentStrategy");
     }
+
+    @Override
+    public String getName() {
+        return "CreditCard";
+    }
 }

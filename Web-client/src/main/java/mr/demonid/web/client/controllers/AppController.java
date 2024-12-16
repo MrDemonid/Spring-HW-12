@@ -1,14 +1,12 @@
 package mr.demonid.web.client.controllers;
 
-import feign.FeignException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import mr.demonid.web.client.dto.CartItem;
 import mr.demonid.web.client.dto.ProductInfo;
-import mr.demonid.web.client.links.PaymentServiceClient;
+import mr.demonid.web.client.dto.StrategyInfo;
 import mr.demonid.web.client.service.CartService;
 import mr.demonid.web.client.service.CatalogService;
 import mr.demonid.web.client.service.PaymentService;
@@ -18,13 +16,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 
 @Controller
@@ -117,35 +114,32 @@ public class AppController {
     }
 
     /**
-     * Переход на страницу карзины.
+     * Переход на страницу корзины товаров.
      * Только для авторизированных пользователей.
      * Хотя никто не мешает авторизировать пользователя и попозже, когда
      * нажмет кнопку оплаты.
      */
     @GetMapping("cart")
     public String placeOrder(Model model) {
+        // задаем список товаров в корзине
         List<CartItem> items = cartService.getItems();
-        System.out.println("--> all cart items: " + items);
         model.addAttribute("cartItems", items);
-        List<String> payments = paymentService.getPaymentStrategies();
+        // задаем список возможных стратегий оплаты.
+        List<StrategyInfo> payments = paymentService.getPaymentStrategies();
         model.addAttribute("paymentMethods", payments);
-        return "/cart";
+        return "cart";
     }
 
     /**
      * Формирование запроса на оплату товаров.
-     * @param paymentMethod Метод оплаты.
      */
     @PostMapping("/processPayment")
     public String processPayment(@RequestParam("paymentMethod") String paymentMethod, Model model) {
-        // Логика обработки выбранного способа оплаты
-        System.out.println("Выбранный способ оплаты: " + paymentMethod);
 
         // Добавьте логику, например, сохранение данных или вызов сервиса
-        model.addAttribute("message", "Выбранный способ оплаты: " + paymentMethod);
-
         // Возвращаем страницу подтверждения или перенаправляем
-        return "paymentResult"; // paymentResult.html
+        return "redirect:/index";
+//        return "paymentResult"; // paymentResult.html
     }
 
 

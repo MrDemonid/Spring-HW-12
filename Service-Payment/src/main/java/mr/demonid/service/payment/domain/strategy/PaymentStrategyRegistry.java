@@ -1,5 +1,6 @@
 package mr.demonid.service.payment.domain.strategy;
 
+import mr.demonid.service.payment.dto.StrategyInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,7 +28,13 @@ public class PaymentStrategyRegistry {
         return strategies.get(strategyName);
     }
 
-    public List<String> getAvailableStrategies() {
-        return List.copyOf(strategies.keySet());
+    /**
+     * Возвращает список доступных стратегий оплаты.
+     */
+    public List<StrategyInfo> getAvailableStrategies() {
+        return strategies.entrySet().stream()
+                .map(e -> new StrategyInfo(e.getKey(), e.getValue().getName()))
+                .toList();
     }
+
 }

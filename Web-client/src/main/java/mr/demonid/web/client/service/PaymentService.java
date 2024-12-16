@@ -2,6 +2,7 @@ package mr.demonid.web.client.service;
 
 import feign.FeignException;
 import lombok.AllArgsConstructor;
+import mr.demonid.web.client.dto.StrategyInfo;
 import mr.demonid.web.client.links.PaymentServiceClient;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +14,13 @@ public class PaymentService {
 
     private PaymentServiceClient paymentServiceClient;
 
-    public List<String> getPaymentStrategies() {
+    public List<StrategyInfo> getPaymentStrategies() {
         try {
-            List<String> res = paymentServiceClient.getAvailableStrategies().getBody();
-            return res;
+            return paymentServiceClient.getAvailableStrategies().getBody();
         } catch (FeignException e) {
             System.out.println("PaymentService: " + e.getMessage());
-            return List.of("Оплата временно недоступна");
+            return List.of(new StrategyInfo("", "Оплата временно недоступна"));
         }
     }
+
 }

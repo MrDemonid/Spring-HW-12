@@ -11,4 +11,9 @@ public class PayPalPaymentStrategy implements PaymentStrategy {
     public void pay(String userId, BigDecimal amount) {
         System.out.println("Using PayPalPaymentStrategy");
     }
+
+    @Override
+    public String getName() {
+        return "PayPal";
+    }
 }

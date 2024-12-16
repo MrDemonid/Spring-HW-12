@@ -2,6 +2,7 @@ package mr.demonid.service.payment.controllers;
 
 import mr.demonid.service.payment.domain.strategy.PaymentStrategy;
 import mr.demonid.service.payment.domain.strategy.PaymentStrategyRegistry;
+import mr.demonid.service.payment.dto.StrategyInfo;
 import mr.demonid.service.payment.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +38,7 @@ public class PaymentController {
     }
 
     @GetMapping("/strategies")
-    public ResponseEntity<List<String>> getAvailableStrategies() {
-        System.out.println("do strategies...");
-        List<String> availableStrategies = strategyRegistry.getAvailableStrategies();
-        System.out.println("--> strategies: " + availableStrategies);
+    public ResponseEntity<List<StrategyInfo>> getAvailableStrategies() {
         return ResponseEntity.ok(strategyRegistry.getAvailableStrategies());
     }
 }
