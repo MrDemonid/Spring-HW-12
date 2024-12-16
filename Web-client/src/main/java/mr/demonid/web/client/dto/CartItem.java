@@ -9,5 +9,6 @@ import lombok.Data;
 public class CartItem {
     private String userId;
     private String productId;
+    private String productName;
     private int quantity;
 }

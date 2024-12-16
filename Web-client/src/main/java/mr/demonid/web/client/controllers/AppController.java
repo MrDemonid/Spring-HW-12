@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import mr.demonid.web.client.dto.CartItem;
 import mr.demonid.web.client.dto.ProductInfo;
 import mr.demonid.web.client.service.CartService;
 import mr.demonid.web.client.service.CatalogService;
@@ -113,16 +114,11 @@ public class AppController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             // Пользователь анонимный
             System.out.println("Anonim: " + getAnonymousId(request));
-//            if (getAnonymousId(request) == null) {
-//                 setAnonymousCookie(response);
-//                System.out.println("new Anon: " + getAnonymousId(request));
-//            }
-//            String id = (String) session.getAttribute("anon_id");
-//            if (id == null) {
-//                session.setAttribute("anon_id", UUID.randomUUID().toString());
-//                System.out.println("-- new anon_id: " + session.getAttribute("anon_id"));
-//            }
         }
+        List<CartItem> cartItems = cartService.getItems();
+
+        model.addAttribute("cartItems");
+
         // открываем заказ
         cartService.addToCart(productId.toString(), quantity);
         return "redirect:/index";

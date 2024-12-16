@@ -1,5 +1,6 @@
 package mr.demonid.web.client.links;
 
+import jakarta.servlet.http.HttpServletRequest;
 import mr.demonid.web.client.configs.FeignClientConfig;
 import mr.demonid.web.client.dto.CartItem;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -7,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * Обращение к микросервису Cart-service.
@@ -19,5 +22,8 @@ public interface CartServiceClient {
 
     @PostMapping("/api/cart/add")
     ResponseEntity<CartItem> addItem(@RequestParam String productId, @RequestParam Integer quantity);
+
+    @GetMapping("/api/cart")
+    ResponseEntity<List<CartItem>> getItems();
 
     }
