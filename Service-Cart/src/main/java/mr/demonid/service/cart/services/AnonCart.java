@@ -1,26 +1,25 @@
-package mr.demonid.service.cart.strategy;
+package mr.demonid.service.cart.services;
 
 import mr.demonid.service.cart.dto.CartItem;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Корзина для анонимных пользователей.
  * Располагается в памяти и теряется при уходе пользователя.
  */
-@Service
 public class AnonCart implements Cart {
 
-    private final Map<String, List<CartItem>> cartItems = new ConcurrentHashMap<>();
+    private static final Map<String, List<CartItem>> cartItems = new ConcurrentHashMap<>();
+    private String userId;
 
+    public AnonCart(String userId) {
+        this.userId = userId;
+    }
 
     @Override
-    public CartItem addItem(String userId, String productId, int quantity) {
+    public CartItem addItem(String productId, int quantity) {
         List<CartItem> cart = cartItems.computeIfAbsent(userId, k -> new ArrayList<>());
 
         CartItem item = cart.stream().filter(cartItem -> cartItem.getProductId().equals(productId)).findFirst().orElse(null);
@@ -34,7 +33,7 @@ public class AnonCart implements Cart {
     }
 
     @Override
-    public void removeItem(String userId, String productId) {
+    public void removeItem(String productId) {
         List<CartItem> cart = cartItems.get(userId);
         if (cart != null) {
             cart.removeIf(cartItem -> cartItem.getProductId().equals(productId));
@@ -45,8 +44,23 @@ public class AnonCart implements Cart {
     }
 
     @Override
-    public List<CartItem> getItems(String userId) {
+    public List<CartItem> getItems() {
         return cartItems.getOrDefault(userId, Collections.emptyList());
+    }
+
+    @Override
+    public int getQuantity(String productId) {
+        List<CartItem> cart = cartItems.getOrDefault(userId, Collections.emptyList());
+        return cart.stream()
+                .filter(cartItem -> cartItem.getProductId().equals(productId))
+                .findFirst()
+                .orElse(new CartItem()).getQuantity();
+    }
+
+    @Override
+    public int getQuantity() {
+        List<CartItem> cart = cartItems.getOrDefault(userId, Collections.emptyList());
+        return cart.stream().mapToInt(CartItem::getQuantity).sum();
     }
 
 }

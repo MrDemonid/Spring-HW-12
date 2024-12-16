@@ -27,7 +27,6 @@ import java.util.Set;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-
     /**
      * Цепочка фильтров безопасности.
      */
