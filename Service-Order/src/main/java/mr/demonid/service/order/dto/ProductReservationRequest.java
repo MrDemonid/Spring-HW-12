@@ -15,7 +15,6 @@ public class ProductReservationRequest {
 
     private UUID orderId;
     private long userId;
-    private long shopId;
     private long productId;
     private int quantity;
     private BigDecimal price;

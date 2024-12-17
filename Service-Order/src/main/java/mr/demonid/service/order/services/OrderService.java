@@ -11,6 +11,7 @@ import mr.demonid.service.order.exceptions.OrderThrowedException;
 import mr.demonid.service.order.links.CatalogServiceClient;
 import mr.demonid.service.order.links.PaymentServiceClient;
 import mr.demonid.service.order.repository.OrderRepository;
+import mr.demonid.service.order.saga.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,45 +30,33 @@ public class OrderService {
 
     /**
      * Создаёт новый заказ и проводит его через все этапы.
-     * @param userId    Заказчик.
-     * @param shopId    Магазин.
-     * @param productId Код товара.
-     * @param quantity  Количество.
-     * @param price     Стоимость за единицу.
+     * @param userId        Заказчик.
+     * @param productId     Код товара.
+     * @param quantity      Количество.
+     * @param price         Стоимость за единицу.
+     * @param paymentMethod Тип оплаты.
      * @return Идентификатор заказа, или NULL в случае неудачи (например отказ БД).
      */
-    public UUID createOrder(long userId, long shopId, long productId, int quantity, BigDecimal price) {
-        // Создаём заказ
-        Order order = new Order(userId, productId, quantity, price, LocalDateTime.now(), OrderStatus.Pending);
-        order = orderRepository.save(order);
-        if (order.getOrderId() == null) {
-            throw new BadOrderException();      // ошибка создания заказа, возможно БД недоступна
-        }
-        // Заказ создан, сопровождаем его до завершения, либо до отмены.
-        ProductReservationRequest request = new ProductReservationRequest(order.getOrderId(), userId, shopId, productId, quantity, price);
-        try {
-            // Резервируем товар
-            catalogServiceClient.reserve(request);
-            // Резервируем средства на счету пользователя
-            PaymentRequest paymentRequest = new PaymentRequest(order.getOrderId(), userId, shopId, price.multiply(BigDecimal.valueOf(quantity)), "BUY");
-            paymentServiceClient.transfer(paymentRequest);
-            // Меняем статус заказа
-            order.setStatus(OrderStatus.Approved);
-            orderRepository.save(order);
-            // и подтверждаем списание резерва
-            catalogServiceClient.approve(order.getOrderId());
-            return order.getOrderId();
+    public UUID createOrder(long userId, long productId, int quantity, BigDecimal price, String paymentMethod) {
+        // Создаём контекст данных заказа.
+        SagaContext context = new SagaContext();
+        context.setUserId(userId);
+        context.setProductId(productId);
+        context.setQuantity(quantity);
+        context.setPrice(price);
+        context.setPaymentMethod(paymentMethod);
 
-        } catch (FeignException e) {
-            System.out.println(e.contentUTF8());
-            // отменяем заказ
-            order.setStatus(OrderStatus.Cancelled);
-            orderRepository.save(order);
-            // отменяем резерв товара
-            catalogServiceClient.unblock(order.getOrderId());
-            // переправляем ошибку дальше
-            throw new OrderThrowedException(e.contentUTF8());
-        }
+        // Задаем последовательность действий.
+        SagaOrchestrator<SagaContext> orchestrator = new SagaOrchestrator<>();
+        orchestrator.addStep(new CreateOrderStep(orderRepository));                 // открываем заказ
+        orchestrator.addStep(new ProductReservationStep(catalogServiceClient));     // резервируем товар
+        orchestrator.addStep(new PaymentReservationStep(paymentServiceClient));     // проверяем средства и способ оплаты
+        orchestrator.addStep(new ApprovedStep(orderRepository, catalogServiceClient, paymentServiceClient));    // завершение сделки
+        orchestrator.addStep(new InformationStep());                                // оповещаем пользователя
+
+        // Запускаем выполнение и возвращаем результат.
+        orchestrator.execute(context);
+        return context.getOrderId();
     }
 
     /**

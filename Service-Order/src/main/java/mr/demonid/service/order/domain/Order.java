@@ -25,16 +25,18 @@ public class Order {
     private long productId;
     private int quantity;
     private BigDecimal price;
+    private String paymentMethod;
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public Order(long userId, long productId, int quantity, BigDecimal price, LocalDateTime orderDate, OrderStatus status) {
+    public Order(long userId, long productId, int quantity, BigDecimal price, String paymentMethod, LocalDateTime orderDate, OrderStatus status) {
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
+        this.paymentMethod = paymentMethod;
         this.orderDate = orderDate;
         this.status = status;
     }
@@ -55,6 +57,7 @@ public class Order {
         result = 31 * result + Long.hashCode(productId);
         result = 31 * result + quantity;
         result = 31 * result + Objects.hashCode(price);
+        result = 31 * result + Objects.hashCode(paymentMethod);
         result = 31 * result + Objects.hashCode(orderDate);
         result = 31 * result + Objects.hashCode(status);
         return result;

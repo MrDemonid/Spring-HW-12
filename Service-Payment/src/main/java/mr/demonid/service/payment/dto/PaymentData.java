@@ -1,6 +1,5 @@
 package mr.demonid.service.payment.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
