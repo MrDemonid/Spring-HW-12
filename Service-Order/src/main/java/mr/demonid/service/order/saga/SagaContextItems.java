@@ -1,17 +1,15 @@
-package mr.demonid.web.client.dto;
-
+package mr.demonid.service.order.saga;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
 @Data
-public class CartItem {
-    private String productId;
+@AllArgsConstructor
+public class SagaContextItems {
+    private Long productId;
     private String productName;
     private int quantity;
     private BigDecimal price;
-    private BigDecimal totalPrice;
 }

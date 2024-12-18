@@ -9,10 +9,10 @@ import mr.demonid.service.order.links.PaymentServiceClient;
 import java.math.BigDecimal;
 
 /**
- * Шаг: проверка и резервирование средств у пользователя.
+ * Шаг: Оплата заказа.
  */
 @AllArgsConstructor
-public class PaymentReservationStep implements SagaStep<SagaContext> {
+public class PaymentTransferStep implements SagaStep<SagaContext> {
 
     private PaymentServiceClient paymentServiceClient;
 
@@ -22,10 +22,10 @@ public class PaymentReservationStep implements SagaStep<SagaContext> {
             PaymentRequest paymentRequest = new PaymentRequest(
                     context.getOrderId(),
                     context.getUserId(),
-                    context.getPrice().multiply(BigDecimal.valueOf(context.getQuantity())),
+                    context.getTotalAmount(),
                     context.getPaymentMethod(),
                     "BUY");
-            paymentServiceClient.reservation(paymentRequest);
+            paymentServiceClient.transfer(paymentRequest);
         } catch (FeignException e) {
             throw new SagaStepException("Ошибка оплаты: " + e.getMessage());
         }

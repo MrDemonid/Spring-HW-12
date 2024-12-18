@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 
 @Configuration
+@EnableTransactionManagement
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {

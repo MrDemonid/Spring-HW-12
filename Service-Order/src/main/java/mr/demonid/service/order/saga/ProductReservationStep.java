@@ -16,11 +16,20 @@ public class ProductReservationStep implements SagaStep<SagaContext> {
 
     @Override
     public void execute(SagaContext context) throws SagaStepException {
-        ProductReservationRequest request = new ProductReservationRequest(context.getOrderId(), context.getUserId(), context.getProductId(), context.getQuantity(), context.getPrice());
         try {
-            catalogServiceClient.reserve(request);
+            context.getItems().forEach(product -> {
+                ProductReservationRequest request = ProductReservationRequest.builder()
+                        .orderId(context.getOrderId())
+                        .userId(context.getUserId())
+                        .productId(product.getProductId())
+                        .quantity(product.getQuantity())
+                        .price(product.getPrice())
+                        .build();
+                catalogServiceClient.reserve(request);
+            });
+
         } catch (FeignException e) {
-            throw new SagaStepException(e.getMessage());
+            throw new SagaStepException("Ошибка резервирования товара: " + e.getMessage());
         }
     }
 

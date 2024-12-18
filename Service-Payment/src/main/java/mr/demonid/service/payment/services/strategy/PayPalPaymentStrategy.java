@@ -1,5 +1,6 @@
-package mr.demonid.service.payment.domain.strategy;
+package mr.demonid.service.payment.services.strategy;
 
+import mr.demonid.service.payment.exceptions.PaymentStepException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -8,8 +9,13 @@ import java.math.BigDecimal;
 public class PayPalPaymentStrategy implements PaymentStrategy {
 
     @Override
-    public void pay(String userId, BigDecimal amount) {
+    public void pay(Long userId, BigDecimal amount)  throws PaymentStepException {
         System.out.println("Using PayPalPaymentStrategy");
+    }
+
+    @Override
+    public boolean isPresent() {
+        return false;
     }
 
     @Override

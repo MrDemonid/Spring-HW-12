@@ -13,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentRequest {
     private UUID orderId;
-    private Long fromUserId;
-    private BigDecimal transferAmount;
+    private Long userId;
+    private BigDecimal amount;
     private String paymentMethod;
     private String type;            // "DEBIT", "CREDIT" и тд.
 }

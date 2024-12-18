@@ -1,6 +1,7 @@
 package mr.demonid.service.order.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,12 +12,11 @@ import java.util.UUID;
  */
 @Data
 @AllArgsConstructor
+@Builder
 public class ProductReservationRequest {
-
     private UUID orderId;
     private long userId;
     private long productId;
     private int quantity;
     private BigDecimal price;
-
 }

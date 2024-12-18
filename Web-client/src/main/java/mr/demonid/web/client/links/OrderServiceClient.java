@@ -1,7 +1,7 @@
 package mr.demonid.web.client.links;
 
 import mr.demonid.web.client.configs.FeignClientConfig;
-import mr.demonid.web.client.dto.ProductReservationRequest;
+import mr.demonid.web.client.dto.OrderRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +16,6 @@ import java.util.UUID;
 public interface OrderServiceClient {
 
     @PostMapping("/api/orders")
-    ResponseEntity<UUID> createOrder(@RequestBody ProductReservationRequest order);
+    ResponseEntity<UUID> createOrder(@RequestBody OrderRequest order);
 
 }

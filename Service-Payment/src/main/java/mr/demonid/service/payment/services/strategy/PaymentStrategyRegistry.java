@@ -1,4 +1,4 @@
-package mr.demonid.service.payment.domain.strategy;
+package mr.demonid.service.payment.services.strategy;
 
 import mr.demonid.service.payment.dto.StrategyInfo;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * Хранит все найденные бины стратегий оплаты.
  * Стратегии добавляются автоматически, достаточно определить их через @Component (или аналогично),
- * т.е. зарегистрировать в IoC.
+ * то есть зарегистрировать в IoC.
  */
 @Component
 public class PaymentStrategyRegistry {
@@ -24,6 +24,10 @@ public class PaymentStrategyRegistry {
             ));
     }
 
+    /**
+     * Выбор стратегии по её имени (ключу).
+     * В данной реализации в качестве ключа используется имя класса стратегии.
+     */
     public PaymentStrategy getStrategy(String strategyName) {
         return strategies.get(strategyName);
     }

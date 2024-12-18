@@ -31,6 +31,7 @@
             <th>Наименование</th>
             <th>Количество</th>
             <th>Цена</th>
+            <th>Общая стоимость</th>
         </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
             <td th:text="${item.productName}"></td>
             <td th:text="${item.quantity}"></td>
             <td th:text="${item.price}"></td>
+            <td th:text="${item.totalPrice}"></td>
         </tr>
         </tbody>
     </table>

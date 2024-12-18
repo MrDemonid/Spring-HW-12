@@ -1,4 +1,4 @@
-package mr.demonid.web.client.dto;
+package mr.demonid.service.order.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Data
 public class CartItem {
-    private String productId;
+    private Long productId;
     private String productName;
     private int quantity;
     private BigDecimal price;

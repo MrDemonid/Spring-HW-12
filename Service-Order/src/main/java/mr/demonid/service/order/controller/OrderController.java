@@ -2,6 +2,7 @@ package mr.demonid.service.order.controller;
 
 import lombok.AllArgsConstructor;
 import mr.demonid.service.order.domain.Order;
+import mr.demonid.service.order.dto.OrderRequest;
 import mr.demonid.service.order.dto.ProductReservationRequest;
 import mr.demonid.service.order.services.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,10 @@ public class OrderController {
      * @return Http-статус.
      */
     @PostMapping
-    public ResponseEntity<UUID> createOrder(@RequestBody ProductReservationRequest order) {
+    public ResponseEntity<UUID> createOrder(@RequestBody OrderRequest order) {
         System.out.println("Открываем заказ: " + order);
-        UUID orderId = orderService.createOrder(order.getUserId(), order.getShopId(), order.getProductId(), order.getQuantity(), order.getPrice());
-        return ResponseEntity.ok(orderId);
+//        orderService.createOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 }

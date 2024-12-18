@@ -2,6 +2,7 @@ package mr.demonid.service.payment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import mr.demonid.service.payment.services.strategy.PaymentStrategy;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentRequest {
     private UUID orderId;
-    private Long fromUserId;
+    private Long userId;
     private BigDecimal transferAmount;
     private String paymentMethod;
     private String type;            // "DEBIT", "CREDIT" и тд.

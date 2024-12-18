@@ -1,34 +1,46 @@
 package mr.demonid.service.payment.services;
 
-import mr.demonid.service.payment.domain.PaymentStep;
-import mr.demonid.service.payment.domain.strategy.PaymentStrategy;
-import mr.demonid.service.payment.dto.PaymentData;
+import lombok.AllArgsConstructor;
+import mr.demonid.service.payment.dto.PaymentRequest;
+import mr.demonid.service.payment.repository.PaymentRepository;
+import mr.demonid.service.payment.repository.UserRepository;
+import mr.demonid.service.payment.services.steps.*;
+import mr.demonid.service.payment.dto.PaymentContext;
+import mr.demonid.service.payment.services.strategy.PaymentStrategyRegistry;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class PaymentService {
-    private final List<PaymentStep> steps;
 
-    public PaymentService(List<PaymentStep> steps) {
-        this.steps = steps;
+    PaymentStrategyRegistry paymentStrategyRegistry;
+    PaymentRepository paymentRepository;
+    UserRepository userRepository;
+
+
+    /**
+     * Списание средств со счета пользователя в пользу магазина.
+     */
+    public Boolean transfer(PaymentRequest request) {
+        // создаем контекст данных
+        PaymentContext context = new PaymentContext(
+                request.getOrderId(),
+                request.getUserId(),
+                request.getTransferAmount(),
+                paymentStrategyRegistry.getStrategy(request.getPaymentMethod())
+        );
+        // настраиваем последовательность действий
+        OrchestratorPayment<PaymentContext> orchestrator = new OrchestratorPayment<>();
+        orchestrator.addStep(new CreateTransferStep(paymentRepository));
+        orchestrator.addStep(new CheckBalanceStep(paymentRepository, userRepository));
+        orchestrator.addStep(new CheckMethodStep());
+        orchestrator.addStep(new PaymentExecutionStep());
+        orchestrator.addStep(new PaymentApprovedStep(paymentRepository));
+        // выполняем
+        orchestrator.execute(context);
+        return true;
     }
 
-    public void processPayment(String userId, BigDecimal amount, PaymentStrategy paymentStrategy) {
-        PaymentData data = new PaymentData(userId, amount, paymentStrategy);
 
-        for (PaymentStep step : steps) {
-            step.execute(data);
-            if (!data.isSuccess()) {
-                System.out.println("Payment process stopped: " + data.getMessage());
-                break; // Прерываем цепочку при ошибке
-            }
-        }
-
-        if (data.isSuccess()) {
-            System.out.println("Payment completed successfully for user: " + userId);
-        }
-    }
 }

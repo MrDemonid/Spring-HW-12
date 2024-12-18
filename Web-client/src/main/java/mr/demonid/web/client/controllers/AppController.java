@@ -1,26 +1,21 @@
 package mr.demonid.web.client.controllers;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import mr.demonid.web.client.dto.CartItem;
-import mr.demonid.web.client.dto.ProductInfo;
-import mr.demonid.web.client.dto.StrategyInfo;
+import mr.demonid.web.client.dto.*;
 import mr.demonid.web.client.service.CartService;
 import mr.demonid.web.client.service.CatalogService;
+import mr.demonid.web.client.service.OrderService;
 import mr.demonid.web.client.service.PaymentService;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import mr.demonid.web.client.utils.IdnUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -31,6 +26,7 @@ public class AppController {
     private CatalogService catalogService;
     private CartService cartService;
     private PaymentService paymentService;
+    private OrderService orderService;
 
 
     @GetMapping
@@ -96,18 +92,7 @@ public class AppController {
      * Добавляем товар в корзину.
      */
     @PostMapping("/add-to-cart")
-    public String addItemToCart(@RequestParam("productId") Long productId,
-                             @RequestParam("quantity") Integer quantity,
-                             Model model,
-                             HttpServletRequest request)
-    {
-        System.out.println("Product ID: " + productId);
-        System.out.println("Quantity: " + quantity);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            // Пользователь анонимный
-            System.out.println("Anonim: " + getAnonymousId(request));
-        }
+    public String addItemToCart(@RequestParam("productId") Long productId, @RequestParam("quantity") Integer quantity) {
         // Отправляем товар в корзину
         cartService.addToCart(productId.toString(), quantity);
         return "redirect:/index";
@@ -117,12 +102,12 @@ public class AppController {
      * Переход на страницу корзины товаров.
      * Только для авторизированных пользователей.
      * Хотя никто не мешает авторизировать пользователя и попозже, когда
-     * нажмет кнопку оплаты.
+     * нажмет кнопку оплаты. Но мне так захотелось.
      */
     @GetMapping("cart")
     public String placeOrder(Model model) {
         // задаем список товаров в корзине
-        List<CartItem> items = cartService.getItems();
+        List<CartItem> items = cartService.getCartItems();
         model.addAttribute("cartItems", items);
         // задаем список возможных стратегий оплаты.
         List<StrategyInfo> payments = paymentService.getPaymentStrategies();
@@ -135,31 +120,16 @@ public class AppController {
      */
     @PostMapping("/processPayment")
     public String processPayment(@RequestParam("paymentMethod") String paymentMethod, Model model) {
-
-        // Добавьте логику, например, сохранение данных или вызов сервиса
-        // Возвращаем страницу подтверждения или перенаправляем
+        List<CartItem> items = cartService.getCartItems();
+        if (!items.isEmpty()) {
+            OrderRequest order = new OrderRequest();
+            order.setUserId(IdnUtil.getUserId());
+            order.setPaymentMethod(paymentMethod);
+            order.setCartItems(items);
+            System.out.println("order processed: " + order);
+            orderService.createOrder(order);
+        }
         return "redirect:/index";
-//        return "paymentResult"; // paymentResult.html
-    }
-
-
-
-//    public void setAnonymousCookie(HttpServletResponse response) {
-//        Cookie cookie = new Cookie("ANON_ID", UUID.randomUUID().toString());
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(true);
-//        cookie.setMaxAge(7 * 24 * 60 * 60); // 7 дней
-////        cookie.setSameSite("Lax"); // Защита от CSRF
-//        response.addCookie(cookie);
-//    }
-
-    public String getAnonymousId(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-                .filter(cookie -> "ANON_ID".equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElse(null);
     }
 
 }

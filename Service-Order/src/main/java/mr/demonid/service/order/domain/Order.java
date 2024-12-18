@@ -1,65 +1,70 @@
 package mr.demonid.service.order.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Таблица заказов.
+ */
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "order_id", updatable = false, nullable = false)
     private UUID orderId;
+
+    @Column(nullable = false)
     private long userId;
-    private long productId;
-    private int quantity;
-    private BigDecimal price;
+
+    @Column(nullable = false)
+    private BigDecimal totalPrice;
+
+    @Column(nullable = false)
     private String paymentMethod;
-    private LocalDateTime orderDate;
+
+    private LocalDateTime createAt;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public Order(long userId, long productId, int quantity, BigDecimal price, String paymentMethod, LocalDateTime orderDate, OrderStatus status) {
-        this.userId = userId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.price = price;
-        this.paymentMethod = paymentMethod;
-        this.orderDate = orderDate;
-        this.status = status;
-    }
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    List<OrderItem> items;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Order order = (Order) o;
-        return userId == order.userId && productId == order.productId && quantity == order.quantity && Objects.equals(orderId, order.orderId) && Objects.equals(price, order.price) && Objects.equals(orderDate, order.orderDate) && status == order.status;
+    public void addItem(OrderItem item) {
+        items.add(item);
+        item.setOrder(this);
     }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(orderId);
-        result = 31 * result + Long.hashCode(userId);
-        result = 31 * result + Long.hashCode(productId);
-        result = 31 * result + quantity;
-        result = 31 * result + Objects.hashCode(price);
-        result = 31 * result + Objects.hashCode(paymentMethod);
-        result = 31 * result + Objects.hashCode(orderDate);
-        result = 31 * result + Objects.hashCode(status);
-        return result;
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        Order order = (Order) o;
+//        return userId == order.userId && productId == order.productId && quantity == order.quantity && Objects.equals(orderId, order.orderId) && Objects.equals(price, order.price) && Objects.equals(orderDate, order.orderDate) && status == order.status;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = Objects.hashCode(orderId);
+//        result = 31 * result + Long.hashCode(userId);
+//        result = 31 * result + Long.hashCode(productId);
+//        result = 31 * result + quantity;
+//        result = 31 * result + Objects.hashCode(price);
+//        result = 31 * result + Objects.hashCode(paymentMethod);
+//        result = 31 * result + Objects.hashCode(orderDate);
+//        result = 31 * result + Objects.hashCode(status);
+//        return result;
+//    }
 }

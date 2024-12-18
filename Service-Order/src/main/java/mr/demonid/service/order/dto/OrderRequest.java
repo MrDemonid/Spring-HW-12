@@ -1,4 +1,4 @@
-package mr.demonid.web.client.dto;
+package mr.demonid.service.order.dto;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.List;
  */
 @Data
 public class OrderRequest {
-    private String userId;
+    private Long userId;
     private String paymentMethod;
     private List<CartItem> cartItems;
 }
