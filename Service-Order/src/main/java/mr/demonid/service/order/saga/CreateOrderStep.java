@@ -9,6 +9,7 @@ import mr.demonid.service.order.repository.OrderRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,9 +21,7 @@ public class CreateOrderStep implements SagaStep<SagaContext> {
     private final OrderRepository orderRepository;
 
     @Override
-    @Transactional(rollbackFor = SagaStepException.class)
     public void execute(SagaContext context) throws SagaStepException {
-
         Order order = Order.builder()
                 .userId(context.getUserId())
                 .totalPrice(context.getTotalAmount())
@@ -30,20 +29,23 @@ public class CreateOrderStep implements SagaStep<SagaContext> {
                 .createAt(LocalDateTime.now())
                 .status(OrderStatus.Pending)
                 .build();
-        final Order finalOrder = order;
+
+        Order finalOrder = order;
         List<OrderItem> orderItems = context.getItems().stream()
                 .map(e -> OrderItem.builder()
-                        .order(finalOrder)
+                        .order(finalOrder) // Передаем ссылку на созданный заказ
                         .productId(e.getProductId())
                         .productName(e.getProductName())
                         .quantity(e.getQuantity())
                         .price(e.getPrice())
                         .build()
                 ).toList();
-        order.setItems(orderItems);
+
+        order.setItems(new ArrayList<>(orderItems));    // иначе получим неизменяемый список items'ов. Спасибо lombok, за прекрасные пару часов отладки! А надо то было, всего лишь документацию почитать на @Builder :)
         order = orderRepository.save(order);
+        context.setOrderId(order.getOrderId());
         if (order.getOrderId() == null) {
-            throw new SagaStepException("Ошибка создания заказа");      // ошибка создания заказа, возможно БД недоступна
+            throw new SagaStepException("Ошибка создания заказа. Проблемы с БД");      // ошибка создания заказа, возможно БД недоступна
         }
     }
 

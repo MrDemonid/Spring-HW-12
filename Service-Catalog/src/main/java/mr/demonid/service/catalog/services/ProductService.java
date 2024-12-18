@@ -35,14 +35,18 @@ public class ProductService {
     public void reserve(ProductReservationRequest request) throws CatalogException {
         Product product = productRepository.findByIdWithCategory(request.getProductId()).orElse(null);
         if (product == null) {
+            System.out.println("Product not found");
             throw new NotFoundException();
         }
         if (product.getStock() < request.getQuantity()) {
+            System.out.println("Not enough stock");
             throw new NotAvailableException();
         }
         // резервируем товар
         product.setStock(product.getStock() - request.getQuantity());
+        System.out.println("Reserved product: " + product);
         productRepository.save(product);
+        System.out.println("store reserve...");
         blockedProductService.reserve(request.getOrderId(), product.getId(), request.getQuantity());
     }
 

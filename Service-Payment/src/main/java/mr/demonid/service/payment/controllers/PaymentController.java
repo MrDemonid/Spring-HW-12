@@ -22,7 +22,7 @@ public class PaymentController {
     /**
      * Списание зарезервированных средств.
      */
-    @PostMapping("api/payment/transfer")
+    @PostMapping("/transfer")
     public ResponseEntity<Boolean> transfer(@RequestBody PaymentRequest request) {
         return ResponseEntity.ok(paymentService.transfer(request));
     }
@@ -32,7 +32,7 @@ public class PaymentController {
      * @param orderId  Идентификатор заказа.
      * @return
      */
-    @PostMapping("api/payment/rollback")
+    @PostMapping("/rollback")
     ResponseEntity<Void> rollback(@RequestBody UUID orderId) {
         // В данной реализации не имеет смысла
         return ResponseEntity.ok().build();

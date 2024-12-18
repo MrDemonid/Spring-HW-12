@@ -33,9 +33,7 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<UUID> createOrder(@RequestBody OrderRequest order) {
-        System.out.println("Открываем заказ: " + order);
-//        orderService.createOrder(order);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(orderService.createOrder(order));
     }
+
 }

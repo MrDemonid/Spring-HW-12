@@ -29,12 +29,13 @@ public class ProductReservationStep implements SagaStep<SagaContext> {
             });
 
         } catch (FeignException e) {
-            throw new SagaStepException("Ошибка резервирования товара: " + e.getMessage());
+            throw new SagaStepException(e.contentUTF8());
         }
     }
 
     @Override
     public void rollback(SagaContext context) {
+        System.out.println("-- ProductReservationStep().rollback()");
         try {
             catalogServiceClient.unblock(context.getOrderId());
         } catch (FeignException ignored) {}

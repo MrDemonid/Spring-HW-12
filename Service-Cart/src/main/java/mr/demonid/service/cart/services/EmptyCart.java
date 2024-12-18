@@ -26,12 +26,12 @@ public class EmptyCart implements Cart {
     }
 
     @Override
-    public int getQuantity(String productId) {
+    public int getQuantity() {
         return 0;
     }
 
     @Override
-    public int getQuantity() {
-        return 0;
+    public void clearCart() {
+
     }
 }

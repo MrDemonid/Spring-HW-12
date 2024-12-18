@@ -31,7 +31,6 @@ public class ProductController {
     @GetMapping("/get-all")
     public ResponseEntity<List<ProductInfo>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
-        System.out.println("all products: " + products);
         return getListResponseEntity(products);
     }
 
@@ -51,7 +50,6 @@ public class ProductController {
     @GetMapping("/get-categories")
     public ResponseEntity<List<String>> getCategories() {
         List<ProductCategory> categories = categoryService.getAllCategories();
-        System.out.println("categories: " + categories);
         return ResponseEntity.ok(categories.stream().map(ProductCategory::getName).toList());
     }
 
@@ -61,7 +59,6 @@ public class ProductController {
      */
     @GetMapping("/get-by-category/{category}")
     public ResponseEntity<List<ProductInfo>> getProductsByCategory(@PathVariable String category) {
-        System.out.println("category: " + category);
         List<Product> products = productService.getProductByCategory(category);
         return getListResponseEntity(products);
     }

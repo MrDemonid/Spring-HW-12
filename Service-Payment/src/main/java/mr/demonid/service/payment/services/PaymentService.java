@@ -23,13 +23,15 @@ public class PaymentService {
      * Списание средств со счета пользователя в пользу магазина.
      */
     public Boolean transfer(PaymentRequest request) {
+        System.out.println("-- transfer method called");
         // создаем контекст данных
         PaymentContext context = new PaymentContext(
                 request.getOrderId(),
                 request.getUserId(),
-                request.getTransferAmount(),
+                request.getAmount(),
                 paymentStrategyRegistry.getStrategy(request.getPaymentMethod())
         );
+        System.out.println("  -- transfer context: " + context);
         // настраиваем последовательность действий
         OrchestratorPayment<PaymentContext> orchestrator = new OrchestratorPayment<>();
         orchestrator.addStep(new CreateTransferStep(paymentRepository));

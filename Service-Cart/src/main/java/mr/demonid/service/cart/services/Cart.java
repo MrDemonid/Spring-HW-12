@@ -9,6 +9,6 @@ public interface Cart {
     CartItem addItem(String productId, int quantity);
     void removeItem(String productId);
     List<CartItem> getItems();
-    int getQuantity(String productId);
     int getQuantity();
+    void clearCart();
 }

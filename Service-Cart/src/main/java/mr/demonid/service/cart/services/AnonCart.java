@@ -51,19 +51,24 @@ public class AnonCart implements Cart {
         return cartItems.getOrDefault(userId, Collections.emptyList());
     }
 
-    @Override
-    public int getQuantity(String productId) {
-        List<CartItem> cart = cartItems.getOrDefault(userId, Collections.emptyList());
-        return cart.stream()
-                .filter(cartItem -> cartItem.getProductId().equals(productId))
-                .findFirst()
-                .orElse(new CartItem()).getQuantity();
-    }
+//    @Override
+//    public int getQuantity(String productId) {
+//        List<CartItem> cart = cartItems.getOrDefault(userId, Collections.emptyList());
+//        return cart.stream()
+//                .filter(cartItem -> cartItem.getProductId().equals(productId))
+//                .findFirst()
+//                .orElse(new CartItem()).getQuantity();
+//    }
 
     @Override
     public int getQuantity() {
         List<CartItem> cart = cartItems.getOrDefault(userId, Collections.emptyList());
         return cart.stream().mapToInt(CartItem::getQuantity).sum();
+    }
+
+    @Override
+    public void clearCart() {
+        cartItems.remove(userId);
     }
 
 }

@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)                      // Отключаем CSRF для запросов API
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/cart/**").permitAll()      // к корзине должен быть доступ вообще у всех
-                        .requestMatchers("/h2-console").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()                       // Остальные требуют аутентификации
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

@@ -45,4 +45,10 @@ public class CartController {
         return ResponseEntity.ok(cart.getQuantity());
     }
 
+    @GetMapping("clear")
+    public ResponseEntity<String> clearCart(HttpServletRequest request) {
+        Cart cart = cartFactory.getCart(request);
+        cart.clearCart();
+        return ResponseEntity.ok().build();
+    }
 }

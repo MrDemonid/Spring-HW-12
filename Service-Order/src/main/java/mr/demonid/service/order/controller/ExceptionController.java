@@ -15,10 +15,10 @@ public class ExceptionController {
     @ExceptionHandler(OrderException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String catalogException(OrderException e) {
-        if (e instanceof OrderThrowedException) {
+        if (e.getMessage().startsWith("Ошибка: ")) {
             return e.getMessage();
         }
-        return "Ошибка: " + LocalDateTime.now() + ": " + e.getMessage();
+        return "Ошибка: " + e.getMessage();
     }
 
 }

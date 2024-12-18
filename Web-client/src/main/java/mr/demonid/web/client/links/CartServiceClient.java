@@ -27,4 +27,7 @@ public interface CartServiceClient {
     @GetMapping("/api/cart")
     ResponseEntity<List<CartItemRequest>> getItems();
 
+    @GetMapping("/api/cart/clear")
+    ResponseEntity<Void> clearCart();
+
 }

@@ -8,6 +8,8 @@ import mr.demonid.service.order.exceptions.SagaStepException;
 import mr.demonid.service.order.links.CatalogServiceClient;
 import mr.demonid.service.order.links.PaymentServiceClient;
 import mr.demonid.service.order.repository.OrderRepository;
+import org.hibernate.Hibernate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Шаг: завершаем сделку.
@@ -28,14 +30,17 @@ public class ApprovedStep implements SagaStep<SagaContext> {
             if (order != null) {
                 // меняем статус
                 order.setStatus(OrderStatus.Approved);
-                orderRepository.save(order);
+                order = orderRepository.save(order);
             }
         } catch (FeignException e) {
-            throw new SagaStepException("Покупка не состоялась: " + e.getMessage());
+            // ошибка с передачей товара в службу доставки
+            throw new SagaStepException("Покупка не состоялась: " + e.contentUTF8());
         } catch (RuntimeException e) {
+            // различные ошибки самой БД, например попытка изменить неизменяемую коллекцию.
             throw new SagaStepException("Непредвиденная ошибка с БД: " + e.getMessage());
         }
     }
+
 
     @Override
     public void rollback(SagaContext context) {

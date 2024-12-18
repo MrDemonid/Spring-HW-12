@@ -37,4 +37,15 @@ public class OrderItem {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
+    }
 }

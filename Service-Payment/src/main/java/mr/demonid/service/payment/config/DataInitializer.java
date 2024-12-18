@@ -18,9 +18,9 @@ public class DataInitializer {
     public ApplicationRunner initData(UserRepository userRepository) {
         return args -> {
             userRepository.saveAll(List.of(
-                new UserEntity(1L, BigDecimal.valueOf(15000.00)),
-                new UserEntity(2L, BigDecimal.valueOf(25000.00)),
-                new UserEntity(3L, BigDecimal.valueOf(35000.00))
+                new UserEntity(1L, BigDecimal.valueOf(5000.00)),
+                new UserEntity(2L, BigDecimal.valueOf(5000.00)),
+                new UserEntity(3L, BigDecimal.valueOf(5000.00))
             ));
         };
     }

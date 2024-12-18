@@ -25,13 +25,17 @@ public class CreateTransferStep implements PaymentStep<PaymentContext> {
     @Transactional
     public void execute(PaymentContext context) throws PaymentStepException {
         // создаем в БД запись о транзакции
-        PaymentEntity entity = new PaymentEntity(
-                context.getOrderId(),
-                context.getUserId(),
-                context.getAmount(),
-                context.getPaymentStrategy().getName(),
-                PaymentStatus.Pending);
-        paymentRepository.save(entity);
+        try {
+            PaymentEntity entity = new PaymentEntity(
+                    context.getOrderId(),
+                    context.getUserId(),
+                    context.getAmount(),
+                    context.getPaymentStrategy().getName(),
+                    PaymentStatus.Pending);
+            paymentRepository.save(entity);
+        } catch (RuntimeException e) {
+            throw new PaymentStepException("Ошибка БД: " + e.getMessage());
+        }
     }
 
     @Override

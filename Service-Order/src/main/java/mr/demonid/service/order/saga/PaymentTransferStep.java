@@ -27,7 +27,7 @@ public class PaymentTransferStep implements SagaStep<SagaContext> {
                     "BUY");
             paymentServiceClient.transfer(paymentRequest);
         } catch (FeignException e) {
-            throw new SagaStepException("Ошибка оплаты: " + e.getMessage());
+            throw new SagaStepException(e.contentUTF8());
         }
     }
 

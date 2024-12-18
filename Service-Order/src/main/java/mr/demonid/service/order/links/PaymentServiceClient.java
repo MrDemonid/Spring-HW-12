@@ -12,10 +12,10 @@ import java.util.UUID;
 @FeignClient(name = "PAYMENT-SERVICE", configuration = FeignClientConfig.class)
 public interface PaymentServiceClient {
 
-    @PostMapping("api/payment/transfer")
+    @PostMapping("/api/payment/transfer")
     ResponseEntity<Void> transfer(@RequestBody PaymentRequest request);
 
-    @PostMapping("api/payment/rollback")
+    @PostMapping("/api/payment/rollback")
     ResponseEntity<Void> rollback(@RequestBody UUID order);
 
 }

@@ -14,12 +14,16 @@ public class BlockedProductService {
     private BlockedProductRepository blockedRepository;
 
     public void reserve(UUID orderId, long productId, int quantity) {
-        blockedRepository.save(new BlockedProduct(orderId, productId, quantity));
+        System.out.println("-- Reserving blocked product " + productId + " for order " + orderId + " with quantity " + quantity);
+        BlockedProduct res = blockedRepository.save(new BlockedProduct(orderId, productId, quantity));
+        System.out.println("  -- result: " + res);
     }
 
     public BlockedProduct unblock(UUID orderId) {
         BlockedProduct blockedProduct = blockedRepository.findById(orderId).orElse(null);
-        blockedRepository.deleteById(orderId);
+        if (blockedProduct != null) {
+            blockedRepository.deleteById(orderId);
+        }
         return blockedProduct;
     }
 }

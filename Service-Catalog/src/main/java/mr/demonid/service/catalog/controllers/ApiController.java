@@ -24,6 +24,7 @@ public class ApiController {
      */
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveCatalog(@RequestBody ProductReservationRequest request) {
+        System.out.println("-- reserve request: " + request);
         productService.reserve(request);
         return ResponseEntity.ok("Товар зарезервирован.");
     }
@@ -33,6 +34,7 @@ public class ApiController {
      */
     @PostMapping("/cancel")
     public ResponseEntity<Void> unblock(@RequestBody UUID orderId) {
+        System.out.println("-- unblock request: " + orderId);
         productService.cancelReserved(orderId);
         return ResponseEntity.ok().build();
     }
