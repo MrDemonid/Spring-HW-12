@@ -8,7 +8,6 @@ import mr.demonid.service.order.exceptions.SagaStepException;
 import mr.demonid.service.order.repository.OrderRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ public class CreateOrderStep implements SagaStep<SagaContext> {
                 .userId(context.getUserId())
                 .totalPrice(context.getTotalAmount())
                 .paymentMethod(context.getPaymentMethod())
-                .createAt(LocalDateTime.now())
                 .status(OrderStatus.Pending)
                 .build();
 
