@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import mr.demonid.service.order.dto.PaymentRequest;
 import mr.demonid.service.order.exceptions.SagaStepException;
 import mr.demonid.service.order.links.PaymentServiceClient;
+import mr.demonid.service.order.services.InformationService;
 
 import java.math.BigDecimal;
 
@@ -14,7 +15,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PaymentTransferStep implements SagaStep<SagaContext> {
 
-    private PaymentServiceClient paymentServiceClient;
+    private final PaymentServiceClient paymentServiceClient;
+
 
     @Override
     public void execute(SagaContext context) throws SagaStepException {

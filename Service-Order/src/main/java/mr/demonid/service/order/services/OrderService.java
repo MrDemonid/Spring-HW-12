@@ -11,10 +11,8 @@ import mr.demonid.service.order.saga.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +22,8 @@ public class OrderService {
 
     private CatalogServiceClient catalogServiceClient;
     private PaymentServiceClient paymentServiceClient;
+
+    private InformationService informationService;
 
     /**
      * Создает новый заказ и проводит его через все этапы.
@@ -40,11 +40,11 @@ public class OrderService {
 
         // Задаем последовательность действий.
         SagaOrchestrator<SagaContext> orchestrator = new SagaOrchestrator<>();
-        orchestrator.addStep(new CreateOrderStep(orderRepository));                 // открываем заказ
+        orchestrator.addStep(new CreateOrderStep(orderRepository, informationService));                 // открываем заказ
         orchestrator.addStep(new ProductReservationStep(catalogServiceClient));     // резервируем товар
         orchestrator.addStep(new PaymentTransferStep(paymentServiceClient));        // Списываем средства в пользу магазина
         orchestrator.addStep(new ApprovedStep(orderRepository, catalogServiceClient)); // завершение сделки
-        orchestrator.addStep(new InformationStep());                                // оповещаем пользователя
+        orchestrator.addStep(new InformationStep(informationService));                                // оповещаем пользователя
 
         // Запускаем выполнение и возвращаем результат.
         orchestrator.execute(context);

@@ -4,6 +4,24 @@ spring:
   profiles:
     active: mcprofile
 
+# Cloud Bus + RabbitMQ
+  cloud:
+    bus:
+      enabled: true
+      amqp:
+        enabled: true
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
+  amqp:
+    enabled: true
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+
   # H2 database
   datasource:
     driver-class-name: org.h2.Driver

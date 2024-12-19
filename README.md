@@ -35,7 +35,13 @@
 но в качестве демонстрации вполне сойдет. 
 
 
-### Разное.
+## RabbitMQ
+Используется вместе со `Spring Cloud Bus`.
+
+Админка: http://localhost:15672
+
+
+## Разное.
 Поскольку магазин может работать и с не авторизированными пользователями,
 то для их идентификации используются куки. Веб-клиент генерирует anon_id
 для каждого нового пользователя, пока он не авторизуется. Эти же
@@ -56,3 +62,4 @@ openssl rsa -in private_key.pem -pubout -out public_key.pem
 ```shell
 openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in private_key.pem -out private_key_pkcs8.pem
 ```
+

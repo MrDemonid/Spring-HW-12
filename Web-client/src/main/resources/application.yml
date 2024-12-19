@@ -5,6 +5,23 @@ spring:
   application:
     name: "WEB-CLIENT"
 
+# Cloud Bus + RabbitMQ
+  cloud:
+    bus:
+      enabled: true
+      amqp:
+        enabled: true
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
+  amqp:
+    enabled: true
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
   security:
     oauth2:
       client:

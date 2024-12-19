@@ -6,6 +6,7 @@ import mr.demonid.service.order.domain.OrderItem;
 import mr.demonid.service.order.domain.OrderStatus;
 import mr.demonid.service.order.exceptions.SagaStepException;
 import mr.demonid.service.order.repository.OrderRepository;
+import mr.demonid.service.order.services.InformationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CreateOrderStep implements SagaStep<SagaContext> {
 
     private final OrderRepository orderRepository;
+    private final InformationService informationService;
 
     @Override
     public void execute(SagaContext context) throws SagaStepException {
@@ -58,5 +60,6 @@ public class CreateOrderStep implements SagaStep<SagaContext> {
             }
             context.setOrderId(null);
         }
+        informationService.sendMessage("Заказ отменен. Попробуйте попозже.");
     }
 }

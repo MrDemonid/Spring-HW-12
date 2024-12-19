@@ -10,8 +10,7 @@ import mr.demonid.web.client.service.CatalogService;
 import mr.demonid.web.client.service.OrderService;
 import mr.demonid.web.client.service.PaymentService;
 import mr.demonid.web.client.utils.IdnUtil;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -31,6 +29,17 @@ public class AppController {
     private CartService cartService;
     private PaymentService paymentService;
     private OrderService orderService;
+
+
+    /**
+     * Прием информационного сообщения от другого микросервиса.
+     */
+    @RabbitListener(queues = "springCloudBusQueuePK8000")
+    public void handleBusMessage(String message) {
+        System.out.println("---->>>> receive: " + message);
+        // дальше можно отправить его пользователю, например на мыло,
+        // или сделать на главной странице область для таких сообщений.
+    }
 
 
     @GetMapping
