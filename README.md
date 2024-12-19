@@ -35,10 +35,18 @@
 но в качестве демонстрации вполне сойдет. 
 
 
-## RabbitMQ
-Используется вместе со `Spring Cloud Bus`.
+## Spring Cloud Bus + RabbitMQ (с Management Plugin)
+```shell
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
+```
+Порт 5672 — стандартный порт для AMQP-протокола.
 
-Админка: http://localhost:15672
+Порт 15672 — для веб-интерфейса RabbitMQ Management.
+
+
+Админка соответственно: http://localhost:15672
+
+Пароль и логин: `guest`
 
 
 ## Разное.
