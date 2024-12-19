@@ -1,4 +1,4 @@
-package mr.demonid.service.payment.services.steps;
+package mr.demonid.service.payment.cor;
 
 import lombok.AllArgsConstructor;
 import mr.demonid.service.payment.domain.PaymentEntity;
@@ -6,24 +6,21 @@ import mr.demonid.service.payment.domain.PaymentStatus;
 import mr.demonid.service.payment.dto.PaymentContext;
 import mr.demonid.service.payment.exceptions.PaymentStepException;
 import mr.demonid.service.payment.repository.PaymentRepository;
-import mr.demonid.service.payment.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
 
 /**
  * Шаг: открытие трансфера.
  */
 @AllArgsConstructor
-public class CreateTransferStep implements PaymentStep<PaymentContext> {
+public class CreateTransferHandler extends PaymentHandler {
 
     private PaymentRepository paymentRepository;
 
 
     @Override
     @Transactional
-    public void execute(PaymentContext context) throws PaymentStepException {
+    protected void handle(PaymentContext context) {
+        System.out.println("-- CreateTransferHandler()");
         // создаем в БД запись о транзакции
         try {
             PaymentEntity entity = new PaymentEntity(
@@ -35,15 +32,6 @@ public class CreateTransferStep implements PaymentStep<PaymentContext> {
             paymentRepository.save(entity);
         } catch (RuntimeException e) {
             throw new PaymentStepException("Ошибка БД: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void rollback(PaymentContext context) {
-        Optional<PaymentEntity> entity = paymentRepository.findByOrderId(context.getOrderId());
-        if (entity.isPresent()) {
-            entity.get().setStatus(PaymentStatus.Cancelled);
-            paymentRepository.save(entity.get());
         }
     }
 }

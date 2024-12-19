@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class ExceptionController {
 
-
     @ExceptionHandler(PaymentBaseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String catalogException(PaymentBaseException e) {
