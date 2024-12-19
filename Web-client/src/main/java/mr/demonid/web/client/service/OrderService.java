@@ -14,12 +14,8 @@ public class OrderService {
     OrderServiceClient orderServiceClient;
     CartServiceClient cartServiceClient;
 
-    public void createOrder(OrderRequest orderRequest) {
-        try {
-            orderServiceClient.createOrder(orderRequest);
-            cartServiceClient.clearCart();
-        } catch (FeignException e) {
-            System.out.println("Error: " + e.contentUTF8());
-        }
+    public void createOrder(OrderRequest orderRequest) throws FeignException {
+        orderServiceClient.createOrder(orderRequest);
+        cartServiceClient.clearCart();
     }
 }

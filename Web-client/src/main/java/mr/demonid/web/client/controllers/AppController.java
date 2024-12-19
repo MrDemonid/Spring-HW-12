@@ -1,5 +1,6 @@
 package mr.demonid.web.client.controllers;
 
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -121,16 +124,33 @@ public class AppController {
      */
     @PostMapping("/processPayment")
     public String processPayment(@RequestParam("paymentMethod") String paymentMethod, Model model) {
-        List<CartItem> items = cartService.getCartItems();
-        if (!items.isEmpty()) {
+        try {
+            List<CartItem> items = cartService.getCartItems();
+            if (items.isEmpty()) {
+                model.addAttribute("errorMessage", "Корзина пуста");
+                return "/error-order";
+            }
             OrderRequest order = new OrderRequest();
             order.setUserId(IdnUtil.getUserId());
             order.setPaymentMethod(paymentMethod);
             order.setCartItems(items);
-            System.out.println("order processed: " + order);
+            System.out.println("-- order processed: " + order);
             orderService.createOrder(order);
+            // показываем результат покупки
+            List<String> names = items.stream().map(CartItem::getProductName).toList();
+            List<Integer> quantity = items.stream().map(CartItem::getQuantity).toList();
+            BigDecimal totalPrice = items.stream().map(CartItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+            model.addAttribute("productName", names.toString());
+            model.addAttribute("quantity", quantity);
+            model.addAttribute("totalCost", totalPrice);
+            System.out.println("-- покупка совершена!");
+            return "/confirmed";
+
+        } catch (FeignException e) {
+            System.out.println("Облом!");
+            model.addAttribute("errorMessage", e.contentUTF8());
+            return "/error-order";
         }
-        return "redirect:/index";
     }
 
 }
