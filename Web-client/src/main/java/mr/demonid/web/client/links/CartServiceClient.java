@@ -30,4 +30,6 @@ public interface CartServiceClient {
     @GetMapping("/api/cart/clear")
     ResponseEntity<Void> clearCart();
 
+    @PostMapping("/api/cart/register-user")
+    ResponseEntity<Void> registerUser(@RequestParam String anonId, @RequestParam String userId);
 }

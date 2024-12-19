@@ -1,5 +1,6 @@
 package mr.demonid.web.client.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import mr.demonid.web.client.dto.*;
@@ -42,10 +43,9 @@ public class AppController {
     @GetMapping("/index")
     public String index(HttpSession session, Model model) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAuthenticated = authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal());
+        boolean isAuthenticated = IdnUtil.isAuthenticated();
         model.addAttribute("isAuthenticated", isAuthenticated);
-        model.addAttribute("username", isAuthenticated ? authentication.getName() : null);
+        model.addAttribute("username", isAuthenticated ? IdnUtil.getUserName() : null);
 
         List<ProductInfo> products;
         // Создаем список категорий продуктов.
@@ -92,8 +92,9 @@ public class AppController {
      * Добавляем товар в корзину.
      */
     @PostMapping("/add-to-cart")
-    public String addItemToCart(@RequestParam("productId") Long productId, @RequestParam("quantity") Integer quantity) {
+    public String addItemToCart(@RequestParam("productId") Long productId, @RequestParam("quantity") Integer quantity, HttpServletRequest request) {
         // Отправляем товар в корзину
+        System.out.println("-->> user: " + IdnUtil.getAnonymousId(request));
         cartService.addToCart(productId.toString(), quantity);
         return "redirect:/index";
     }

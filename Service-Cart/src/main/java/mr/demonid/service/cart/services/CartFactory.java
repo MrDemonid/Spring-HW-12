@@ -3,6 +3,7 @@ package mr.demonid.service.cart.services;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import mr.demonid.service.cart.dto.CartItem;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Фабрика корзин.
@@ -47,6 +49,27 @@ public class CartFactory {
         }
         return emptyCart;   // кто-то без идентификатора
     }
+
+    /**
+     * Корректирует данные авторизировавшегося пользователя, перенося его
+     * товары с анонимной корзины в БД.
+     * @param anonId Идентификатор до авторизации
+     */
+    public void registerUser(String anonId, String userId) {
+        // инициализируем объекты
+        AnonCart anonCart = anonCartProvider.getObject();
+        anonCart.setUserId(anonId);
+        AuthCart authCart = authCartProvider.getObject();
+        authCart.setUserId(userId);
+
+        List<CartItem> source = anonCart.getItems();
+        anonCart.clearCart();
+        // отправляем в корзину авторизированного пользователя, т.е. в БД
+        if (source != null && !source.isEmpty()) {
+            source.forEach(e -> authCart.addItem(e.getProductId(), e.getQuantity()));
+        }
+    }
+
 
     /**
      * Проверяет, является ли текущий пользователь анонимом.

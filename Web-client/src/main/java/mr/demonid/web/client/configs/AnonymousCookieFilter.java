@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
+import mr.demonid.web.client.utils.IdnUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -12,37 +14,31 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Component
+@Log4j2
 public class AnonymousCookieFilter extends OncePerRequestFilter {
 
     private static final String COOKIE_NAME = "ANON_ID";
     private static final int COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7 дней
 
+    /**
+     * Вставляет во входящие запросы куки, идентифицирующие
+     * анонимных пользователей.
+     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        System.out.println("--> " + request.getRequestURI());
-        // Проверяем наличие cookie
-        boolean hasAnonymousCookie = false;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (COOKIE_NAME.equals(cookie.getName())) {
-                    hasAnonymousCookie = true;
-                    break;
-                }
-            }
-        }
-
-        // Если cookie нет, добавляем его
-        if (!hasAnonymousCookie) {
+        // Проверяем наличие cookie и если его нет, то создаем.
+        if (IdnUtil.getCookie(COOKIE_NAME, request.getCookies()) == null) {
             String anonId = UUID.randomUUID().toString();
             Cookie cookie = new Cookie(COOKIE_NAME, anonId);
             cookie.setPath("/");
-            cookie.setHttpOnly(true); // Защита от XSS
+            cookie.setHttpOnly(true);   // защита от JavaScript атак
+            cookie.setSecure(request.isSecure());
             cookie.setMaxAge(COOKIE_MAX_AGE);
             response.addCookie(cookie);
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

@@ -59,4 +59,9 @@ public class CartService {
         return items;
     }
 
+    public void transferAnonToUser(String anonId, String userId) {
+        System.out.println("transfer cart from '" + anonId + "' to '" + userId + "'");
+        cartServiceClient.registerUser(anonId, userId);
+    }
+
 }

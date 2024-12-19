@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private AnonymousCookieFilter anonymousCookieFilter;
+    private CustomAuthenticationSuccessHandler successHandler;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,7 +34,10 @@ public class SecurityConfig {
 //                .sessionManagement(session ->
 //                        session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // Создавать сессии (для анонимов)
 //                )
-                .oauth2Login(Customizer.withDefaults()); // Настройка OAuth2 Login
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler) // подключаем свой фильтр
+                );
+//                .oauth2Login(Customizer.withDefaults()); // Настройка OAuth2 Login
         return http.build();
     }
 
